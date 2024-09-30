@@ -25,7 +25,7 @@ Aqui está o checklist adaptado para a revisão de uma API desenvolvida em Sprin
     <!--- Verifique se os endpoints estão adequadamente protegidos. -->
     - [ ] **Códigos de status HTTP corretos**
     <!--- Verifique se os códigos de status HTTP estão apropriados para cada resposta (200 OK, 201 Created, 404 Not Found, 500 Internal Server Error, etc.). -->
-   
+
 4. **Validações e Constraints**
     - [ ] **Validação de entradas**
     <!--- Verifique se as validações das requisições estão sendo feitas de forma adequada, utilizando anotações como @Valid, @NotNull, @Size, etc. -->
