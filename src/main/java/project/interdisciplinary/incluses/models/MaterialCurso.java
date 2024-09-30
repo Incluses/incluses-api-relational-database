@@ -13,7 +13,7 @@ import java.util.UUID;
 public class MaterialCurso {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Schema(description = "ID do material do curso", example = "5a9238d7-d3e3-45fe-9de9-69353a542793")
+    @Schema(description = "ID do material do curso", example = "5a9238d7-d3e3-45fe-9de9-563754237")
     private UUID id;
 
     @NotNull(message = "o nome não pode ser nulo")
