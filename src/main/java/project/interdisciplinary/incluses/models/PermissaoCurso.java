@@ -17,9 +17,12 @@ public class PermissaoCurso {
     @NotNull
     @Schema(description = "Permissão de acesso ao curso", example = "false")
     private Boolean permissao = false;
-
+    @NotNull(message = "a fkCursoId não pode ser nula")
+    @Column(name = "fk_curso_id")
+    @Schema(description = "Fk do curso que o usuario se inscreve", example = "5a9238d7-d3e3-45fe-9de9-69353a542793")
+    private UUID fkCursoId;
     @ManyToOne
-    @JoinColumn(name = "fk_curso_id")
+    @JoinColumn(name = "fk_curso_id",nullable = false, insertable = false, updatable = false)
     @Schema(description = "Curso relacionado à permissão")
     private Curso curso;
 
@@ -47,6 +50,14 @@ public class PermissaoCurso {
 
     public void setCurso(Curso curso) {
         this.curso = curso;
+    }
+
+    public UUID getFkCursoId() {
+        return fkCursoId;
+    }
+
+    public void setFkCursoId(UUID fkCursoId) {
+        this.fkCursoId = fkCursoId;
     }
 }
 

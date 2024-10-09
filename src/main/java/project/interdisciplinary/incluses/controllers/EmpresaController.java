@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import project.interdisciplinary.incluses.models.Empresa;
+import project.interdisciplinary.incluses.models.dto.CriarEmpresaDTO;
 import project.interdisciplinary.incluses.services.EmpresaService;
 
 import java.util.*;
@@ -32,7 +33,7 @@ public class EmpresaController {
     }
 
     @PostMapping("/inserir")
-    public ResponseEntity<Object> inserirEmpresa(@Valid @RequestBody Empresa empresa, BindingResult resultado) {
+    public ResponseEntity<Object> inserirEmpresa(@Valid @RequestBody CriarEmpresaDTO empresa, BindingResult resultado) {
         if (resultado.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             for (FieldError error : resultado.getFieldErrors()) {
@@ -40,19 +41,19 @@ public class EmpresaController {
             }
             return ResponseEntity.badRequest().body(errors);
         } else {
-            Empresa empresa1 = empresaService.salvarEmpresa(empresa);
-            if (empresa1.getId() == empresa.getId()) {
-                return ResponseEntity.ok("Inserida com sucesso");
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
+            empresaService.criarEmpresa(empresa);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         }
     }
 
     @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<String> excluirEmpresa(@PathVariable UUID id) {
-        if (empresaService.excluirEmpresa(id) != null) {
-            return ResponseEntity.ok("Empresa excluída com sucesso");
+    public ResponseEntity<Object> excluirEmpresa(@PathVariable UUID id) {
+        if (empresaService.excluirEmpresa(id) == true) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -77,13 +78,16 @@ public class EmpresaController {
             empresa.setWebsite(empresaAtualizada.getWebsite());
             empresa.setFkEnderecoId(empresaAtualizada.getFkEnderecoId());
             empresaService.salvarEmpresa(empresa);
-            return ResponseEntity.ok("Empresa atualizada com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         }
     }
 
     @PatchMapping("/atualizarParcial/{id}")
     public ResponseEntity<Object> atualizarEmpresaParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         Empresa empresa = empresaService.buscarEmpresaPorId(id);
+        Map<String, String> response = new HashMap<>();
 
         if (empresa == null) {
             return ResponseEntity.notFound().build();
@@ -99,8 +103,8 @@ public class EmpresaController {
             try {
                 empresa.setFkPerfilId(((UUID) updates.get("fkPerfilId")));
             } catch (ClassCastException e) {
-                return ResponseEntity.badRequest().body("Perfil inválido.");
-            }
+                response.put("message", "Perfil inválido.");
+                return ResponseEntity.badRequest().body(response);            }
         }
         if (updates.containsKey("website")) {
             empresa.setWebsite((String) updates.get("website"));
@@ -109,7 +113,8 @@ public class EmpresaController {
             try {
                 empresa.setFkEnderecoId(((UUID) updates.get("fkEnderecoId")));
             } catch (ClassCastException e) {
-                return ResponseEntity.badRequest().body("Endereço inválido.");
+                response.put("message", "Endereço inválido.");
+                return ResponseEntity.badRequest().body(response);
             }
         }
 
@@ -124,6 +129,6 @@ public class EmpresaController {
         }
 
         empresaService.salvarEmpresa(empresa);
-        return ResponseEntity.ok("Empresa atualizada com sucesso");
-    }
+        response.put("message", "ok");
+        return ResponseEntity.ok(response);    }
 }

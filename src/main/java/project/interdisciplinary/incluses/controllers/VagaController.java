@@ -6,7 +6,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import project.interdisciplinary.incluses.models.Perfil;
 import project.interdisciplinary.incluses.models.Vaga;
+import project.interdisciplinary.incluses.models.dto.CriarVagaDTO;
 import project.interdisciplinary.incluses.services.VagaService;
 
 import java.util.*;
@@ -31,8 +33,19 @@ public class VagaController {
         return vagaService.listarVagas();
     }
 
+    @GetMapping("/selecionar-nome/{nome}")
+    public List<Vaga> buscarVagaNome (@PathVariable String nome){
+        List<Vaga> vagas = vagaService.findByNome(nome);
+        if (vagas != null){
+            return vagas;
+        }
+        else {
+            return null;
+        }
+    }
+
     @PostMapping("/inserir")
-    public ResponseEntity<Object> inserirVaga(@Valid @RequestBody Vaga vaga, BindingResult resultado) {
+    public ResponseEntity<Object> inserirVaga(@Valid @RequestBody CriarVagaDTO vaga, BindingResult resultado) {
         if (resultado.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             for (FieldError error : resultado.getFieldErrors()) {
@@ -40,19 +53,19 @@ public class VagaController {
             }
             return ResponseEntity.badRequest().body(errors);
         } else {
-            Vaga vaga1 = vagaService.salvarVaga(vaga);
-            if (vaga1.getId() == vaga.getId()) {
-                return ResponseEntity.ok("Inserido com sucesso");
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
+            vagaService.criarVaga(vaga);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         }
     }
 
     @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<String> excluirVaga(@PathVariable UUID id) {
-        if (vagaService.excluirVaga(id) != null) {
-            return ResponseEntity.ok("Vaga excluída com sucesso");
+    public ResponseEntity<Object> excluirVaga(@PathVariable UUID id) {
+        if (vagaService.excluirVaga(id) == true) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -71,13 +84,16 @@ public class VagaController {
             vaga.setDescricao(vagaAtualizada.getDescricao());
             vaga.setFkEmpresaId(vagaAtualizada.getFkEmpresaId());
             vagaService.salvarVaga(vaga);
-            return ResponseEntity.ok("Vaga atualizada com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         }
     }
 
     @PatchMapping("/atualizarParcial/{id}")
     public ResponseEntity<Object> atualizarVagaParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         Vaga vaga = vagaService.buscarVagaPorId(id);
+        Map<String, String> response = new HashMap<>();
 
         if (vaga == null) {
             return ResponseEntity.notFound().build();
@@ -90,14 +106,16 @@ public class VagaController {
                 try {
                     vaga.setFkTipoVagaId(((UUID) updates.get("fkTipoVaga")));
                 } catch (ClassCastException e) {
-                    return ResponseEntity.badRequest().body("Tipo de vaga inválido.");
+                    response.put("message", "Tipo de vaga inválido.");
+                    return ResponseEntity.badRequest().body(response);
                 }
             }
         if (updates.containsKey("fkEmpresaId")) {
                 try {
                     vaga.setFkEmpresaId(((UUID) updates.get("fkEmpresaId")));
                 } catch (ClassCastException e) {
-                    return ResponseEntity.badRequest().body("Empresa inválida.");
+                    response.put("message", "Empresa inválida");
+                    return ResponseEntity.badRequest().body(response);
                 }
             }
 
@@ -112,6 +130,7 @@ public class VagaController {
         }
 
         vagaService.salvarVaga(vaga);
-        return ResponseEntity.ok("Vaga atualizada com sucesso");
+        response.put("message", "ok");
+        return ResponseEntity.ok(response);
     }
 }

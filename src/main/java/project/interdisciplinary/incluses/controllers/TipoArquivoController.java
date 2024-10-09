@@ -40,7 +40,9 @@ public class TipoArquivoController {
         } else {
             TipoArquivo tipoArquivo1 = tipoArquivoService.salvarTipoArquivo(tipoArquivo);
             if (tipoArquivo1.getId() == tipoArquivo.getId()) {
-                return ResponseEntity.ok("Inserido com sucesso");
+                Map<String, String> response = new HashMap<>();
+                response.put("message","ok");
+                return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -48,9 +50,11 @@ public class TipoArquivoController {
     }
 
     @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<String> excluirTipoArquivo(@PathVariable UUID id) {
+    public ResponseEntity<Object> excluirTipoArquivo(@PathVariable UUID id) {
         if (tipoArquivoService.excluirTipoArquivo(id) != null) {
-            return ResponseEntity.ok("Tipo de arquivo excluído com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message","ok");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -68,7 +72,9 @@ public class TipoArquivoController {
             TipoArquivo tipoArquivo = tipoArquivoService.buscarTipoArquivoPorId(id);
             tipoArquivo.setNome(tipoArquivoAtualizado.getNome());
             tipoArquivoService.salvarTipoArquivo(tipoArquivo);
-            return ResponseEntity.ok("Tipo de arquivo atualizado com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message","ok");
+            return ResponseEntity.ok(response);
         }
     }
 }

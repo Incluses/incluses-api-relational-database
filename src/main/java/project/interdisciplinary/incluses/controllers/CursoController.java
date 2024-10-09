@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import project.interdisciplinary.incluses.models.Curso;
+import project.interdisciplinary.incluses.models.Vaga;
 import project.interdisciplinary.incluses.services.CursoService;
 
 import java.util.*;
@@ -30,6 +31,16 @@ public class CursoController {
     public List<Curso> listarCursos() {
         return cursoService.listarCursos();
     }
+    @GetMapping("/selecionar-nome/{nome}")
+    public List<Curso> buscarCursoNome (@PathVariable String nome){
+        List<Curso> cursos = cursoService.findByNome(nome);
+        if (cursos != null){
+            return cursos;
+        }
+        else {
+            return null;
+        }
+    }
 
     @PostMapping("/inserir")
     public ResponseEntity<Object> inserirCurso(@Valid @RequestBody Curso curso, BindingResult resultado) {
@@ -42,7 +53,9 @@ public class CursoController {
         } else {
             Curso curso1 = cursoService.salvarCurso(curso);
             if (curso1.getId() == curso.getId()) {
-                return ResponseEntity.ok("Inserido com sucesso");
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "ok");
+                return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -50,9 +63,11 @@ public class CursoController {
     }
 
     @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<String> excluirCurso(@PathVariable UUID id) {
-        if (cursoService.excluirCurso(id) != null) {
-            return ResponseEntity.ok("Curso excluído com sucesso");
+    public ResponseEntity<Object> excluirCurso(@PathVariable UUID id) {
+        if (cursoService.excluirCurso(id) == true) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -71,7 +86,9 @@ public class CursoController {
             curso.setDescricao(cursoAtualizado.getDescricao());
             curso.setNome(cursoAtualizado.getNome());
             cursoService.salvarCurso(curso);
-            return ResponseEntity.ok("Curso atualizado com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         }
     }
 
@@ -101,6 +118,7 @@ public class CursoController {
         }
 
         cursoService.salvarCurso(curso);
-        return ResponseEntity.ok("Curso atualizado com sucesso");
-    }
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "ok");
+        return ResponseEntity.ok(response);    }
 }

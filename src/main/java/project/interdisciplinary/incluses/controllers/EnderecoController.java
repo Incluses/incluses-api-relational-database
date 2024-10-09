@@ -41,7 +41,9 @@ public class EnderecoController {
         } else {
             Endereco endereco1 = enderecoService.salvarEndereco(endereco);
             if (endereco1.getId() == endereco.getId()) {
-                return ResponseEntity.ok("Inserido com sucesso");
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "ok");
+                return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -49,9 +51,11 @@ public class EnderecoController {
     }
 
     @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<String> excluirEndereco(@PathVariable UUID id) {
+    public ResponseEntity<Object> excluirEndereco(@PathVariable UUID id) {
         if (enderecoService.excluirEndereco(id) != null) {
-            return ResponseEntity.ok("Endereço excluído com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -71,12 +75,15 @@ public class EnderecoController {
             endereco.setEstado(enderecoAtualizado.getEstado());
             endereco.setNumero(enderecoAtualizado.getNumero());
             enderecoService.salvarEndereco(endereco);
-            return ResponseEntity.ok("Endereço atualizado com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         }
     }
     @PatchMapping("/atualizarParcial/{id}")
     public ResponseEntity<Object> atualizarEnderecoParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         Endereco endereco = enderecoService.buscarEnderecoPorId(id);
+        Map<String, String> response = new HashMap<>();
 
         if (endereco == null) {
             return ResponseEntity.notFound().build();
@@ -92,6 +99,7 @@ public class EnderecoController {
             try {
                 endereco.setNumero(((Number) updates.get("numero")).intValue());
             } catch (ClassCastException e) {
+                response.put("message", "ok");
                 return ResponseEntity.badRequest().body("Número inválido.");
             }
         }
@@ -107,6 +115,7 @@ public class EnderecoController {
         }
 
         enderecoService.salvarEndereco(endereco);
-        return ResponseEntity.ok("Endereço atualizado com sucesso");
+        response.put("message", "ok");
+        return ResponseEntity.ok(response);
     }
 }

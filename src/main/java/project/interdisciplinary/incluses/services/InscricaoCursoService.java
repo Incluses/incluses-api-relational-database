@@ -2,6 +2,8 @@ package project.interdisciplinary.incluses.services;
 
 import org.springframework.stereotype.Service;
 import project.interdisciplinary.incluses.models.InscricaoCurso;
+import project.interdisciplinary.incluses.models.dto.CriarInscricaoCursoDTO;
+import project.interdisciplinary.incluses.models.dto.CriarInscricaoVagaDTO;
 import project.interdisciplinary.incluses.repositories.InscricaoCursoRepository;
 
 import java.util.List;
@@ -32,5 +34,8 @@ public class InscricaoCursoService {
             return insc.get();
         }
         return null;
+    }
+    public void criarInscricaoCurso(CriarInscricaoCursoDTO criarInscricaoCursoDTO){
+        inscricaoCursoRepository.criarInscricaoCurso(criarInscricaoCursoDTO.getUsuarioId(), criarInscricaoCursoDTO.getCursoId());
     }
 }

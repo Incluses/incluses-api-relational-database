@@ -16,7 +16,7 @@ public class Telefone {
     @Schema(description = "Id do Telefone", example = "5a9238d7-d3e3-45fe-9de9-69353a542793")
     private UUID id;
 
-    @NotNull(message = "o id não pode ser nulo")
+    @NotNull(message = "o telefone não pode ser nulo")
     @Size(min = 11, max = 11)
     @Schema(description = "Número de telefone", example = "11976430875")
     private String telefone;

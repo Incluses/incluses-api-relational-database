@@ -11,7 +11,6 @@ import project.interdisciplinary.incluses.repositories.PerfilRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public class PerfilService implements UserDetailsService {
@@ -51,5 +50,23 @@ public class PerfilService implements UserDetailsService {
                 true,
                 List.of(new SimpleGrantedAuthority(users.getTipoPerfil().getNome()))
         );
+    }
+    public Perfil findByEmail(String email){
+        Optional<Perfil> perfil = perfilRepository.findPerfilByEmail(email);
+        if (perfil.isPresent()){
+            return perfil.get();
+        }
+        else {
+            return null;
+        }
+    }
+    public List<Perfil> findByNome(String nome){
+        Optional<List<Perfil>> perfils = perfilRepository.findPerfilsByNomeContains(nome);
+        if (perfils.isPresent()){
+            return perfils.get();
+        }
+        else {
+            return null;
+        }
     }
 }

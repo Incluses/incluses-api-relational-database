@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import project.interdisciplinary.incluses.models.Setor;
+import project.interdisciplinary.incluses.models.dto.CriarSetorDTO;
 import project.interdisciplinary.incluses.services.SetorService;
 
 import java.util.HashMap;
@@ -30,7 +31,7 @@ public class SetorController {
     }
 
     @PostMapping("/inserir")
-    public ResponseEntity<Object> inserirSetor(@Valid @RequestBody Setor setor, BindingResult resultado) {
+    public ResponseEntity<Object> inserirSetor(@Valid @RequestBody CriarSetorDTO setor, BindingResult resultado) {
         if (resultado.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             for (FieldError error : resultado.getFieldErrors()) {
@@ -38,19 +39,19 @@ public class SetorController {
             }
             return ResponseEntity.badRequest().body(errors);
         } else {
-            Setor setor1 = setorService.salvarSetor(setor);
-            if (setor1.getId() == setor.getId()) {
-                return ResponseEntity.ok("Inserido com sucesso");
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
+            setorService.criarSetor(setor);
+            Map<String, String> response = new HashMap<>();
+            response.put("message","ok");
+            return ResponseEntity.ok(response);
         }
     }
 
     @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<String> excluirSetor(@PathVariable UUID id) {
-        if (setorService.excluirSetor(id) != null) {
-            return ResponseEntity.ok("Setor excluído com sucesso");
+    public ResponseEntity<Object> excluirSetor(@PathVariable UUID id) {
+        if (setorService.excluirSetor(id) == true) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -68,7 +69,9 @@ public class SetorController {
             Setor setor = setorService.buscarSetorPorId(id);
             setor.setNome(setorAtualizado.getNome());
             setorService.salvarSetor(setor);
-            return ResponseEntity.ok("Setor atualizado com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message","ok");
+            return ResponseEntity.ok(response);
         }
     }
 }
