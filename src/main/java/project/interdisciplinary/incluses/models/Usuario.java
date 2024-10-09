@@ -41,7 +41,7 @@ public class Usuario {
     @NotNull(message = "os pronomes não podem ser nulos")
     @Schema(description = "pronomes do usuário", example = "ele/dele")
     private String pronomes;
-    @NotNull(message = "o cpf não pode ser nulo")
+
     @Schema(description = "nome_social ", example = "54504078821")
     @Column(name = "nome_social")
     private String nomeSocial;

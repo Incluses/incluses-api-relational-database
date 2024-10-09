@@ -50,7 +50,7 @@ public class AuthController {
                             .signWith(secretKey, SignatureAlgorithm.HS512)
                             .compact();
                     logger.info("Generated Token: {}", token);
-                    return Map.of("token", "Bearer " + token, "perfil", user.getTipoPerfil().getNome());
+                    return Map.of("token", "Bearer " + token, "type", user.getTipoPerfil().getNome());
                 } catch (Exception e) {
                     logger.error("Erro ao gerar o token JWT: ", e);
                     throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao gerar o token JWT", e);

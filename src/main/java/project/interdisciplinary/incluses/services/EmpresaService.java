@@ -2,6 +2,7 @@ package project.interdisciplinary.incluses.services;
 
 import org.springframework.stereotype.Service;
 import project.interdisciplinary.incluses.models.Empresa;
+import project.interdisciplinary.incluses.models.dto.CriarEmpresaDTO;
 import project.interdisciplinary.incluses.repositories.EmpresaRepository;
 
 import java.util.List;
@@ -25,12 +26,20 @@ public class EmpresaService {
     public Empresa buscarEmpresaPorId(UUID id){
         return empresaRepository.findById(id).orElseThrow(() -> new RuntimeException("Empresa não encontrada"));
     }
-    public Empresa excluirEmpresa(UUID id){
+    public boolean excluirEmpresa(UUID id){
+        empresaRepository.deletarEmpresa(id);
         Optional<Empresa> empr = empresaRepository.findById(id);
         if(empr.isPresent()){
-            empresaRepository.deleteById(id);
-            return empr.get();
+            return false;
         }
-        return null;
+        else {
+            return true;
+        }
+    }
+    public void criarEmpresa(CriarEmpresaDTO criarEmpresaDTO){
+        empresaRepository.criarEmpresa(criarEmpresaDTO.getCnpj(), criarEmpresaDTO.getRazaoSocial(), criarEmpresaDTO.getWebsite(),
+                criarEmpresaDTO.getSetor(), criarEmpresaDTO.getRua(), criarEmpresaDTO.getEstado(), criarEmpresaDTO.getCidade(),
+                criarEmpresaDTO.getCep(), criarEmpresaDTO.getNumero(), criarEmpresaDTO.getNome(), criarEmpresaDTO.getSenha(),
+                criarEmpresaDTO.getEmail(), criarEmpresaDTO.getTelefone());
     }
 }

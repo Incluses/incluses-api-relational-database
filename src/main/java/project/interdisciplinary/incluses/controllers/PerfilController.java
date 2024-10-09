@@ -31,21 +31,24 @@ public class PerfilController {
         return perfilService.listarPerfis();
     }
 
-    @PostMapping("/inserir")
-    public ResponseEntity<Object> inserirPerfil(@Valid @RequestBody Perfil perfil, BindingResult resultado) {
-        if (resultado.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : resultado.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        } else {
-            Perfil perfil1 = perfilService.salvarPerfil(perfil);
-            if (perfil1.getId() == perfil.getId()) {
-                return ResponseEntity.ok("Inserido com sucesso");
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
+    @GetMapping("/selecionar-email/{email}")
+    public Perfil buscarPerfil (@PathVariable String email){
+        Perfil perfil = perfilService.findByEmail(email);
+        if (perfil != null){
+            return perfil;
+        }
+        else {
+            return null;
+        }
+    }
+    @GetMapping("/selecionar-nome/{nome}")
+    public List<Perfil> buscarPerfilNome (@PathVariable String nome){
+        List<Perfil> perfils = perfilService.findByNome(nome);
+        if (perfils != null){
+            return perfils;
+        }
+        else {
+            return null;
         }
     }
 
@@ -74,13 +77,15 @@ public class PerfilController {
             perfil.setBiografia(perfilAtualizado.getBiografia());
             perfil.setFkTipoPerfilId(perfilAtualizado.getFkTipoPerfilId());
             perfilService.salvarPerfil(perfil);
-            return ResponseEntity.ok("Perfil atualizado com sucesso");
-        }
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);        }
     }
 
     @PatchMapping("/atualizarParcial/{id}")
     public ResponseEntity<Object> atualizarPerfilParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         Perfil perfil = perfilService.buscarPerfilPorId(id);
+        Map<String, String> response = new HashMap<>();
 
         if (perfil == null) {
             return ResponseEntity.notFound().build();
@@ -102,7 +107,8 @@ public class PerfilController {
             try {
                 perfil.setFkTipoPerfilId(((UUID) updates.get("fkTipoPerfilId")));
             } catch (ClassCastException e) {
-                return ResponseEntity.badRequest().body("Tipo de perfil inválido.");
+                response.put("message", "Tipo de perfil inválido.");
+                return ResponseEntity.badRequest().body(response);
             }
         }
 
@@ -117,7 +123,7 @@ public class PerfilController {
         }
 
         perfilService.salvarPerfil(perfil);
-        return ResponseEntity.ok("Perfil atualizado com sucesso");
-    }
+        response.put("message", "ok");
+        return ResponseEntity.ok(response);    }
 }
 

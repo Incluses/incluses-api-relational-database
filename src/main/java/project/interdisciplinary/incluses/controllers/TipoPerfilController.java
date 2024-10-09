@@ -40,7 +40,9 @@ public class TipoPerfilController {
         } else {
             TipoPerfil tipoPerfil1 = tipoPerfilService.salvarTipoPerfil(tipoPerfil);
             if (tipoPerfil1.getId() == tipoPerfil.getId()) {
-                return ResponseEntity.ok("Inserido com sucesso");
+                Map<String, String> response = new HashMap<>();
+                response.put("message","ok");
+                return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -48,9 +50,11 @@ public class TipoPerfilController {
     }
 
     @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<String> excluirTipoPerfil(@PathVariable UUID id) {
+    public ResponseEntity<Object> excluirTipoPerfil(@PathVariable UUID id) {
         if (tipoPerfilService.excluirTipoPerfil(id) != null) {
-            return ResponseEntity.ok("Tipo de perfil excluído com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message","ok");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -68,7 +72,9 @@ public class TipoPerfilController {
             TipoPerfil tipoPerfil = tipoPerfilService.buscarTipoPerfilPorId(id);
             tipoPerfil.setNome(tipoPerfilAtualizado.getNome());
             tipoPerfilService.salvarTipoPerfil(tipoPerfil);
-            return ResponseEntity.ok("Tipo de perfil atualizado com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message","ok");
+            return ResponseEntity.ok(response);
         }
     }
 }

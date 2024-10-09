@@ -65,7 +65,9 @@ public class ConfiguracaoController {
             configuracao.setNotificacao(configuracaoAtualizada.getNotificacao());
             configuracao.setFkPerfilId(configuracaoAtualizada.getFkPerfilId());
             configuracaoService.salvarConfiguracao(configuracao);
-            return ResponseEntity.ok("Configuração atualizada com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         }
     }
 
@@ -78,6 +80,7 @@ public class ConfiguracaoController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")})
     public ResponseEntity<Object> atualizarConfiguracaoParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         Configuracao configuracao = configuracaoService.buscarConfiguracaoPorId(id);
+        Map<String, String> response = new HashMap<>();
 
         if (configuracao == null) {
             return ResponseEntity.notFound().build();
@@ -89,7 +92,8 @@ public class ConfiguracaoController {
             try {
                 configuracao.setFkPerfilId((UUID) updates.get("fkPerfilId"));
             } catch (ClassCastException e) {
-                return ResponseEntity.badRequest().body("Perfil inválido.");
+                response.put("message", "Perfil inválido.");
+                return ResponseEntity.badRequest().body(response);
             }
         }
 
@@ -103,6 +107,6 @@ public class ConfiguracaoController {
             return ResponseEntity.badRequest().body(errors);
         }
         configuracaoService.salvarConfiguracao(configuracao);
-        return ResponseEntity.ok("Configuração salva com sucesso");
-    }
+        response.put("message", "ok");
+        return ResponseEntity.ok(response);    }
 }

@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import project.interdisciplinary.incluses.models.Usuario;
+import project.interdisciplinary.incluses.models.dto.CriarUsuarioDTO;
 import project.interdisciplinary.incluses.services.UsuarioService;
 
 import java.util.*;
@@ -31,8 +32,8 @@ public class UsuarioController {
         return usuarioService.listarUsuarios();
     }
 
-    @PostMapping("/inserir")
-    public ResponseEntity<Object> inserirUsuario(@Valid @RequestBody Usuario usuario, BindingResult resultado) {
+    @PostMapping("/public/inserir")
+    public ResponseEntity<Object> inserirUsuario(@Valid @RequestBody CriarUsuarioDTO usuario, BindingResult resultado) {
         if (resultado.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             for (FieldError error : resultado.getFieldErrors()) {
@@ -40,19 +41,19 @@ public class UsuarioController {
             }
             return ResponseEntity.badRequest().body(errors);
         } else {
-            Usuario usuario1 = usuarioService.salvarUsuario(usuario);
-            if (usuario1.getId() == usuario.getId()) {
-                return ResponseEntity.ok("Inserido com sucesso");
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
+            usuarioService.registrarUsuario(usuario);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         }
     }
 
     @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<String> excluirUsuario(@PathVariable UUID id) {
-        if (usuarioService.excluirUsuario(id) != null) {
-            return ResponseEntity.ok("Usuário excluído com sucesso");
+    public ResponseEntity<Object> excluirUsuario(@PathVariable UUID id) {
+        if (usuarioService.excluirUsuario(id) == true) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -60,6 +61,7 @@ public class UsuarioController {
 
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<Object> atualizarUsuario(@PathVariable UUID id, @Valid @RequestBody Usuario usuarioAtualizado, BindingResult resultado) {
+        Map<String, String> response = new HashMap<>();
         if (resultado.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             for (FieldError error : resultado.getFieldErrors()) {
@@ -75,13 +77,14 @@ public class UsuarioController {
             usuario.setFkPerfilId(usuarioAtualizado.getFkPerfilId());
             usuario.setDtNascimento(usuarioAtualizado.getDtNascimento());
             usuarioService.salvarUsuario(usuario);
-            return ResponseEntity.ok("Usuário atualizado com sucesso");
-        }
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);        }
     }
 
     @PatchMapping("/atualizarParcial/{id}")
     public ResponseEntity<Object> atualizarUsuarioParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         Usuario usuario = usuarioService.buscarUsuarioPorId(id);
+        Map<String, String> response = new HashMap<>();
 
         if (usuario == null) {
             return ResponseEntity.notFound().build();
@@ -94,7 +97,8 @@ public class UsuarioController {
             try {
                 usuario.setFkPerfilId(((UUID) updates.get("fkPerfilId")));
             } catch (ClassCastException e) {
-                return ResponseEntity.badRequest().body("Perfil inválido.");
+                response.put("message","Perfil inválido.");
+                return ResponseEntity.badRequest().body(response);
             }
         }
         if (updates.containsKey("dtNascimento")) {
@@ -111,7 +115,7 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(errors);
         }
         usuarioService.salvarUsuario(usuario);
-        return ResponseEntity.ok("Usuário atualizado com sucesso");
-    }
+        response.put("message","ok");
+        return ResponseEntity.ok(response);    }
 }
 

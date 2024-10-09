@@ -78,9 +78,11 @@ public class ArquivoController {
             @ApiResponse(responseCode = "400", description = "Erro de validação",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = Arquivo.class)))})
-    public ResponseEntity<String> excluirArquivo(@PathVariable UUID id) {
+    public ResponseEntity<Object> excluirArquivo(@PathVariable UUID id) {
         if (arquivoService.excluirArquivo(id) != null) {
-            return ResponseEntity.ok("Arquivo excluído com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -110,7 +112,9 @@ public class ArquivoController {
             arquivo.setS3Url(arquivoAtualizado.getS3Url());
             arquivo.setFkTipoArquivoId(arquivoAtualizado.getFkTipoArquivoId());
             arquivoService.salvarArquivo(arquivo);
-            return ResponseEntity.ok("Arquivo atualizado com sucessoo");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         }
     }
 
@@ -123,6 +127,8 @@ public class ArquivoController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")})
     public ResponseEntity atualizarArquivoParcial(@PathVariable UUID id, @RequestBody Map updates) {
         Arquivo arquivo = arquivoService.buscarArquivoPorId(id);
+        Map<String, String> response = new HashMap<>();
+
 
         if (arquivo == null) {
             return ResponseEntity.notFound().build();
@@ -143,7 +149,8 @@ public class ArquivoController {
             try {
                 arquivo.setFkTipoArquivoId(((UUID) updates.get("fkTipoArquivoId")));
             } catch (ClassCastException e) {
-                return ResponseEntity.badRequest().body("Tipo de arquivo inválido.");
+                response.put("message", "Tipo de arquivo inválido.");
+                return ResponseEntity.badRequest().body(response);
             }
         }
 
@@ -157,6 +164,7 @@ public class ArquivoController {
             return ResponseEntity.badRequest().body(errors);
         }
         arquivoService.salvarArquivo(arquivo);
-        return ResponseEntity.ok("Salvo com sucesso");
+        response.put("message", "ok");
+        return ResponseEntity.ok(response);
     }
 }

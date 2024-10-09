@@ -27,14 +27,23 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/login").permitAll()
-                        .requestMatchers("swagger-ui/index.html").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("EMPRESA")
-                        .requestMatchers("/api/user/**").hasRole("USUARIO")
+                        // Endpoints públicos
+                        .requestMatchers("/api/auth/login", "/usuario/public/inserir", "/empresa/public/inserir", "/swagger-ui/**", "v3/api-docs/**").permitAll()
+
+                        // Endpoints com roles específicas
+                        .requestMatchers("/**").hasRole("EMPRESA")
+                        .requestMatchers("/**").hasRole("USUARIO")
+
+                        // Todas as outras requisições devem ser autenticadas
                         .anyRequest().authenticated()
-                ).formLogin(AbstractHttpConfigurer::disable)
+                )
+                // Desabilita a página de login padrão e CSRF (para APIs REST)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
+
+                // Adiciona o filtro de JWT antes do UsernamePasswordAuthenticationFilter
                 .addFilterBefore(new JwtAuthenticationFilter(userDetailsService, secretKey()), UsernamePasswordAuthenticationFilter.class);
+
         return http.build();
     }
     @Bean

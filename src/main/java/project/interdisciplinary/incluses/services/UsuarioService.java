@@ -2,6 +2,7 @@ package project.interdisciplinary.incluses.services;
 
 import org.springframework.stereotype.Service;
 import project.interdisciplinary.incluses.models.Usuario;
+import project.interdisciplinary.incluses.models.dto.CriarUsuarioDTO;
 import project.interdisciplinary.incluses.repositories.UsuarioRepository;
 
 import java.util.List;
@@ -18,6 +19,11 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
+    public void registrarUsuario(CriarUsuarioDTO criarUsuarioDTO){
+        usuarioRepository.criarUsuario(criarUsuarioDTO.getCpf(),criarUsuarioDTO.getDtNascimento(),criarUsuarioDTO.getPronomes(),
+                criarUsuarioDTO.getNomeSocial(), criarUsuarioDTO.getNome(), criarUsuarioDTO.getEmail(),
+                criarUsuarioDTO.getEmail(), criarUsuarioDTO.getTelefone());
+    }
     public Usuario salvarUsuario(Usuario usuario){
         return usuarioRepository.save(usuario);
     }
@@ -25,12 +31,14 @@ public class UsuarioService {
     public Usuario buscarUsuarioPorId(UUID id){
         return usuarioRepository.findById(id).orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
     }
-    public Usuario excluirUsuario(UUID id){
-        Optional<Usuario> user = usuarioRepository.findById(id);
-        if(user.isPresent()){
-            usuarioRepository.deleteById(id);
-            return user.get();
-        }
-        return null;
+    public boolean excluirUsuario(UUID id){
+       usuarioRepository.deletarUsuario(id);
+       Optional<Usuario> deletado = usuarioRepository.findById(id);
+       if(deletado.isPresent()){
+           return false;
+       }
+       else {
+           return true;
+       }
     }
 }

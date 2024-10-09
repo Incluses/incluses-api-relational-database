@@ -40,17 +40,22 @@ public class SituacaoTrabalhistaController {
         } else {
             SituacaoTrabalhista situacaoTrabalhista1 = situacaoTrabalhistaService.salvarSituacaoTrabalhista(situacaoTrabalhista);
             if (situacaoTrabalhista1.getId() == situacaoTrabalhista.getId()) {
-                return ResponseEntity.ok("Inserido com sucesso");
-            } else {
+                Map<String, String> response = new HashMap<>();
+                response.put("message","ok");
+                return ResponseEntity.ok(response);
+            }
+            else {
                 return ResponseEntity.badRequest().build();
             }
         }
     }
 
     @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<String> excluirSituacaoTrabalhista(@PathVariable UUID id) {
+    public ResponseEntity<Object> excluirSituacaoTrabalhista(@PathVariable UUID id) {
         if (situacaoTrabalhistaService.excluirSituacaoTrabalhista(id) != null) {
-            return ResponseEntity.ok("Situação trabalhista excluída com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message","ok");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -68,7 +73,8 @@ public class SituacaoTrabalhistaController {
             SituacaoTrabalhista situacaoTrabalhista = situacaoTrabalhistaService.buscarSituacaoTrabalhistaPorId(id);
             situacaoTrabalhista.setNome(situacaoTrabalhistaAtualizado.getNome());
             situacaoTrabalhistaService.salvarSituacaoTrabalhista(situacaoTrabalhista);
-            return ResponseEntity.ok("Situação trabalhista atualizada com sucesso");
-        }
+            Map<String, String> response = new HashMap<>();
+            response.put("message","ok");
+            return ResponseEntity.ok(response);        }
     }
 }

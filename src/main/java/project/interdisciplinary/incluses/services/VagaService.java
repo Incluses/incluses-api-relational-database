@@ -1,7 +1,10 @@
 package project.interdisciplinary.incluses.services;
 
 import org.springframework.stereotype.Service;
+import project.interdisciplinary.incluses.models.Curso;
+import project.interdisciplinary.incluses.models.Perfil;
 import project.interdisciplinary.incluses.models.Vaga;
+import project.interdisciplinary.incluses.models.dto.CriarVagaDTO;
 import project.interdisciplinary.incluses.repositories.VagaRepository;
 
 import java.util.List;
@@ -25,12 +28,28 @@ public class VagaService {
     public Vaga buscarVagaPorId(UUID id){
         return vagaRepository.findById(id).orElseThrow(() -> new RuntimeException("Vaga não encontrada"));
     }
-    public Vaga excluirVaga(UUID id){
+    public boolean excluirVaga(UUID id){
+        UUID[] ids = new UUID[100];
+        ids[0] = id;
+        vagaRepository.deletarVaga(ids);
         Optional<Vaga> vaga = vagaRepository.findById(id);
         if(vaga.isPresent()){
-            vagaRepository.deleteById(id);
-            return vaga.get();
+            return false;
         }
-        return null;
+        else {
+            return true;
+        }
+    }
+    public List<Vaga> findByNome(String nome){
+        Optional<List<Vaga>> vagas = vagaRepository.findVagasByNomeContains(nome);
+        if (vagas.isPresent()){
+            return vagas.get();
+        }
+        else {
+            return null;
+        }
+    }
+    public void criarVaga(CriarVagaDTO criarVagaDTO){
+        vagaRepository.criarVaga(criarVagaDTO.getDescricao(), criarVagaDTO.getNome(), criarVagaDTO.getEmpresaId(),criarVagaDTO.getTipoVagaId());
     }
 }

@@ -2,6 +2,7 @@ package project.interdisciplinary.incluses.services;
 
 import org.springframework.stereotype.Service;
 import project.interdisciplinary.incluses.models.MaterialCurso;
+import project.interdisciplinary.incluses.models.dto.CriarMaterialCursoDTO;
 import project.interdisciplinary.incluses.repositories.MaterialCursoRepository;
 
 import java.util.List;
@@ -25,12 +26,19 @@ public class MaterialCursoService {
     public MaterialCurso buscarMaterialCursoPorId(UUID id){
         return materialCursoRepository.findById(id).orElseThrow(() -> new RuntimeException("MaterialCurso não encontrado"));
     }
-    public MaterialCurso excluirMaterialCurso(UUID id){
+    public boolean excluirMaterialCurso(UUID id){
+        materialCursoRepository.deleteMaterialCurso(id);
         Optional<MaterialCurso> mate = materialCursoRepository.findById(id);
         if(mate.isPresent()){
-            materialCursoRepository.deleteById(id);
-            return mate.get();
+            return false;
         }
-        return null;
+        else {
+            return true;
+        }
+    }
+
+    public void criarMaterialCurso(CriarMaterialCursoDTO criarMaterialCursoDTO){
+        materialCursoRepository.criarMaterialCurso(criarMaterialCursoDTO.getDescricao(),
+                criarMaterialCursoDTO.getCursoId(),criarMaterialCursoDTO.getArquivoId(), criarMaterialCursoDTO.getNome());
     }
 }

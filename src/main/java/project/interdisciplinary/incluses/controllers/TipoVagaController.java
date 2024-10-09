@@ -40,7 +40,9 @@ public class TipoVagaController {
         } else {
             TipoVaga tipoVaga1 = tipoVagaService.salvarTipoVaga(tipoVaga);
             if (tipoVaga1.getId() == tipoVaga.getId()) {
-                return ResponseEntity.ok("Inserido com sucesso");
+                Map<String, String> response = new HashMap<>();
+                response.put("message","ok");
+                return ResponseEntity.ok(response);
             } else {
                 return ResponseEntity.badRequest().build();
             }
@@ -48,9 +50,11 @@ public class TipoVagaController {
     }
 
     @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<String> excluirTipoVaga(@PathVariable UUID id) {
+    public ResponseEntity<Object> excluirTipoVaga(@PathVariable UUID id) {
         if (tipoVagaService.excluirTipoVaga(id) != null) {
-            return ResponseEntity.ok("Tipo de vaga excluído com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message","ok");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -68,7 +72,9 @@ public class TipoVagaController {
             TipoVaga tipoVaga = tipoVagaService.buscarTipoVagaPorId(id);
             tipoVaga.setNome(tipoVagaAtualizado.getNome());
             tipoVagaService.salvarTipoVaga(tipoVaga);
-            return ResponseEntity.ok("Tipo de vaga atualizado com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message","ok");
+            return ResponseEntity.ok(response);
         }
     }
 }

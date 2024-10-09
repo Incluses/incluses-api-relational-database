@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import project.interdisciplinary.incluses.models.MaterialCurso;
+import project.interdisciplinary.incluses.models.dto.CriarMaterialCursoDTO;
 import project.interdisciplinary.incluses.services.MaterialCursoService;
 
 import java.util.*;
@@ -15,7 +16,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 
 @RestController
-@RequestMapping("/materialCurso")
+@RequestMapping("/material-curso")
 public class MaterialCursoController {
     private final MaterialCursoService materialCursoService;
     private final Validator validator;
@@ -32,7 +33,7 @@ public class MaterialCursoController {
     }
 
     @PostMapping("/inserir")
-    public ResponseEntity<Object> inserirMaterialCurso(@Valid @RequestBody MaterialCurso materialCurso, BindingResult resultado) {
+    public ResponseEntity<Object> inserirMaterialCurso(@Valid @RequestBody CriarMaterialCursoDTO materialCurso, BindingResult resultado) {
         if (resultado.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             for (FieldError error : resultado.getFieldErrors()) {
@@ -40,19 +41,19 @@ public class MaterialCursoController {
             }
             return ResponseEntity.badRequest().body(errors);
         } else {
-            MaterialCurso materialCurso1 = materialCursoService.salvarMaterialCurso(materialCurso);
-            if (materialCurso1.getId() == materialCurso.getId()) {
-                return ResponseEntity.ok("Inserido com sucesso");
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
+            materialCursoService.criarMaterialCurso(materialCurso);
+            Map<String, String> response = new HashMap<>();
+            response.put("message","ok");
+            return ResponseEntity.ok(response);
         }
     }
 
     @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<String> excluirMaterialCurso(@PathVariable UUID id) {
-        if (materialCursoService.excluirMaterialCurso(id) != null) {
-            return ResponseEntity.ok("Material do curso excluído com sucesso");
+    public ResponseEntity<Object> excluirMaterialCurso(@PathVariable UUID id) {
+        if (materialCursoService.excluirMaterialCurso(id) == true) {
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -76,13 +77,16 @@ public class MaterialCursoController {
             materialCurso.setFkArquivoId(materialCursoAtualizado.getFkArquivoId());
             materialCurso.setDescricao(materialCursoAtualizado.getDescricao());
             materialCursoService.salvarMaterialCurso(materialCurso);
-            return ResponseEntity.ok("Material do curso atualizado com sucesso");
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
         }
     }
 
     @PatchMapping("/atualizarParcial/{id}")
     public ResponseEntity<Object> atualizarMaterialCursoParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         MaterialCurso materialCurso = materialCursoService.buscarMaterialCursoPorId(id);
+        Map<String, String> response = new HashMap<>();
 
         if (materialCurso == null) {
             return ResponseEntity.notFound().build();
@@ -95,14 +99,16 @@ public class MaterialCursoController {
             try {
                 materialCurso.setFkCursoId(((UUID) updates.get("fkCursoId")));
             } catch (ClassCastException e) {
-                return ResponseEntity.badRequest().body("Curso inválido.");
+                response.put("message", "Curso inválido.");
+                return ResponseEntity.badRequest().body(response);
             }
         }
         if (updates.containsKey("fkArquivoId")) {
             try {
                 materialCurso.setFkArquivoId(((UUID) updates.get("fkArquivoId")));
             } catch (ClassCastException e) {
-                return ResponseEntity.badRequest().body("Arquivo inválido.");
+                response.put("message", "Arquivo inválido.");
+                return ResponseEntity.badRequest().body(response);
             }
         }
         if (updates.containsKey("descricao")) {
@@ -120,6 +126,7 @@ public class MaterialCursoController {
         }
 
         materialCursoService.salvarMaterialCurso(materialCurso);
-        return ResponseEntity.ok("Material do curso atualizado com sucesso");
+        response.put("message", "ok");
+        return ResponseEntity.ok(response);
     }
 }

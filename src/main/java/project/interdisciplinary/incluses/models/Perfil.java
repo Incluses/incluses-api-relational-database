@@ -43,7 +43,6 @@ public class Perfil {
     @Schema(description = "Fk que representa o tipo do perfil", example = "5a9238d7-d3e3-45fe-9de9-69353a542793")
     private UUID fkTipoPerfilId;
 
-    @NotNull(message = "a fkTipoPerfilId não pode ser nula")
     @Column(name = "fk_ft_perfil_id")
     @Schema(description = "Fk que representa o tipo do perfil", example = "5a9238d7-d3e3-45fe-9de9-69353a542793")
     private UUID fkFtPerfilId;
