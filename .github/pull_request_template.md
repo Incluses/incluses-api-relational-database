@@ -1,5 +1,3 @@
-Aqui está o checklist adaptado para a revisão de uma API desenvolvida em Spring Boot, seguindo o mesmo padrão que você mencionou:
-
 ---
 
 ### O que foi feito?
@@ -57,5 +55,3 @@ Aqui está o checklist adaptado para a revisão de uma API desenvolvida em Sprin
     <!--- Verifique se o endpoint do Swagger está acessível em ambientes apropriados e configurado corretamente. -->
 
 ---
-
-Este checklist abrange as áreas críticas de uma API em Spring Boot, ajudando a garantir a qualidade e a manutenibilidade do código, além de seguir boas práticas de desenvolvimento.
