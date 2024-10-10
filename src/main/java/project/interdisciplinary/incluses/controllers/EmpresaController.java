@@ -32,7 +32,7 @@ public class EmpresaController {
         return empresaService.listarEmpresas();
     }
 
-    @PostMapping("/inserir")
+    @PostMapping("public/inserir")
     public ResponseEntity<Object> inserirEmpresa(@Valid @RequestBody CriarEmpresaDTO empresa, BindingResult resultado) {
         if (resultado.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
