@@ -1,13 +1,14 @@
 package project.interdisciplinary.incluses.repositories;
 
-import jakarta.validation.constraints.Null;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import project.interdisciplinary.incluses.models.Usuario;
 
-import javax.xml.crypto.Data;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
@@ -24,5 +25,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, UUID> {
                       @Param("p_senha") String senha,
                       @Param("p_email") String email,
                       @Param("t_telefone") String telefone);
+
+    @Query("SELECT u FROM Usuario u WHERE u.fkPerfilId = ?1")
+    Optional<Usuario> findUserByFkPerfil(UUID fkPerfil);
 }
 

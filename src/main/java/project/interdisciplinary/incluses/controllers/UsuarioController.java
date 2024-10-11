@@ -32,6 +32,20 @@ public class UsuarioController {
         return usuarioService.listarUsuarios();
     }
 
+    @GetMapping("/selecionar-fk-perfil/{fkPerfil}")
+    public Object acharUsuarioPorFkPerfil(@PathVariable UUID fkPerfil){
+        Usuario usuario = usuarioService.acharPorFkPerfil(fkPerfil);
+        if(usuario != null){
+            return usuario;
+        }
+        else {
+            Map<String, String> response = new HashMap<>();
+            response.put("message","nada encontrado");
+            return ResponseEntity.ok(response);
+        }
+    }
+
+
     @PostMapping("/public/inserir")
     public ResponseEntity<Object> inserirUsuario(@Valid @RequestBody CriarUsuarioDTO usuario, BindingResult resultado) {
         if (resultado.hasErrors()) {

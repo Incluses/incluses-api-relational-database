@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import project.interdisciplinary.incluses.models.AvaliacaoCurso;
+import project.interdisciplinary.incluses.models.Usuario;
 import project.interdisciplinary.incluses.services.AvaliacaoCursoService;
 
 import java.util.*;
@@ -30,6 +31,18 @@ public class AvaliacaoCursoController {
     @GetMapping("/selecionar")
     public List<AvaliacaoCurso> listarAvaliacoes() {
         return avaliacaoCursoService.listarAvaliacoes();
+    }
+    @GetMapping("/selecionar-fk-usuario/{fkUsuario}")
+    public Object acharAvaliacoesPorFkUsuario(@PathVariable UUID fkUsuario){
+        List<AvaliacaoCurso> avaliacaoCurso = avaliacaoCursoService.acharPorFkUser(fkUsuario);
+        if(avaliacaoCurso != null){
+            return avaliacaoCurso;
+        }
+        else {
+            Map<String, String> response = new HashMap<>();
+            response.put("message","nada encontrado");
+            return ResponseEntity.ok(response);
+        }
     }
 
     @PostMapping("/inserir")
