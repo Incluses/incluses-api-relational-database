@@ -3,6 +3,7 @@ package project.interdisciplinary.incluses.services;
 import org.springframework.stereotype.Service;
 import project.interdisciplinary.incluses.models.Arquivo;
 import project.interdisciplinary.incluses.models.AvaliacaoCurso;
+import project.interdisciplinary.incluses.models.Usuario;
 import project.interdisciplinary.incluses.repositories.ArquivoRepository;
 import project.interdisciplinary.incluses.repositories.AvaliacaoCursoRepository;
 
@@ -20,6 +21,15 @@ public class AvaliacaoCursoService {
         return avaliacaoCursoRepository.findAll();
     }
 
+    public List<AvaliacaoCurso> acharPorFkUser(UUID fkUser){
+        Optional<List<AvaliacaoCurso>> avaliacaoCursos = avaliacaoCursoRepository.findAvaliacaoCursosByFkUsuario(fkUser);
+        if(avaliacaoCursos.isPresent()){
+            return avaliacaoCursos.get();
+        }
+        else {
+            return null;
+        }
+    }
     public AvaliacaoCurso salvarAvaliacao(AvaliacaoCurso avaliacaoCurso){
         return avaliacaoCursoRepository.save(avaliacaoCurso);
     }

@@ -19,6 +19,16 @@ public class UsuarioService {
         return usuarioRepository.findAll();
     }
 
+    public Usuario acharPorFkPerfil(UUID fkPerfil){
+        Optional<Usuario> usuario = usuarioRepository.findUserByFkPerfil(fkPerfil);
+        if(usuario.isPresent()){
+            return usuario.get();
+        }
+        else {
+            return null;
+        }
+    }
+
     public void registrarUsuario(CriarUsuarioDTO criarUsuarioDTO){
         usuarioRepository.criarUsuario(criarUsuarioDTO.getCpf(),criarUsuarioDTO.getDtNascimento(),criarUsuarioDTO.getPronomes(),
                 criarUsuarioDTO.getNomeSocial(), criarUsuarioDTO.getNome(), criarUsuarioDTO.getEmail(),
