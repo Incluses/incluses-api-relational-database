@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import project.interdisciplinary.incluses.models.MaterialCurso;
+import project.interdisciplinary.incluses.models.Perfil;
 import project.interdisciplinary.incluses.models.dto.CriarMaterialCursoDTO;
 import project.interdisciplinary.incluses.services.MaterialCursoService;
 
@@ -32,6 +33,16 @@ public class MaterialCursoController {
         return materialCursoService.listarMateriaisCursos();
     }
 
+    @GetMapping("/selecionar-fk-curso/{fkCurso}")
+    public List<MaterialCurso> buscarMaterialDoCurso (@PathVariable UUID fkCurso){
+        List<MaterialCurso> materialCursos = materialCursoService.findMaterialByFkCurso(fkCurso);
+        if (materialCursos != null){
+            return materialCursos;
+        }
+        else {
+            return null;
+        }
+    }
     @PostMapping("/inserir")
     public ResponseEntity<Object> inserirMaterialCurso(@Valid @RequestBody CriarMaterialCursoDTO materialCurso, BindingResult resultado) {
         if (resultado.hasErrors()) {

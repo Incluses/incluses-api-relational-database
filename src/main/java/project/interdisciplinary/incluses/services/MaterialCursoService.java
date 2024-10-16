@@ -1,6 +1,7 @@
 package project.interdisciplinary.incluses.services;
 
 import org.springframework.stereotype.Service;
+import project.interdisciplinary.incluses.models.InscricaoVaga;
 import project.interdisciplinary.incluses.models.MaterialCurso;
 import project.interdisciplinary.incluses.models.dto.CriarMaterialCursoDTO;
 import project.interdisciplinary.incluses.repositories.MaterialCursoRepository;
@@ -40,5 +41,15 @@ public class MaterialCursoService {
     public void criarMaterialCurso(CriarMaterialCursoDTO criarMaterialCursoDTO){
         materialCursoRepository.criarMaterialCurso(criarMaterialCursoDTO.getDescricao(),
                 criarMaterialCursoDTO.getCursoId(),criarMaterialCursoDTO.getArquivoId(), criarMaterialCursoDTO.getNome());
+    }
+
+    public List<MaterialCurso> findMaterialByFkCurso(UUID fkCurso){
+        Optional<List<MaterialCurso>> materialCursos = materialCursoRepository.findMaterialCursosByFkCursoId(fkCurso);
+        if (materialCursos.isPresent()){
+            return materialCursos.get();
+        }
+        else {
+            return null;
+        }
     }
 }
