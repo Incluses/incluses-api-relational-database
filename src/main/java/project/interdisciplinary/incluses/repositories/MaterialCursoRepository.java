@@ -5,6 +5,8 @@ import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import project.interdisciplinary.incluses.models.MaterialCurso;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface MaterialCursoRepository extends JpaRepository<MaterialCurso, UUID> {
@@ -16,5 +18,7 @@ public interface MaterialCursoRepository extends JpaRepository<MaterialCurso, UU
                             @Param("mc_nome") String nome);
     @Procedure(procedureName = "deletar_material_curso")
     void deleteMaterialCurso(UUID mcMaterialCursoId);
+
+    Optional<List<MaterialCurso>> findMaterialCursosByFkCursoId(UUID fkCurso);
 }
 
