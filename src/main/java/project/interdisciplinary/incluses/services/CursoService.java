@@ -48,6 +48,15 @@ public class CursoService {
             return null;
         }
     }
+    public List<Curso> findByFkPerfil(UUID fkPerfil){
+        Optional<List<Curso>> cursos = cursoRepository.findCursosByFkPerfilId(fkPerfil);
+        if (cursos.isPresent()){
+            return cursos.get();
+        }
+        else {
+            return null;
+        }
+    }
 
     public void criarCurso(CriarCursoDTO criarCursoDTO){
         cursoRepository.criarCurso(criarCursoDTO.getDescricao(), criarCursoDTO.getNome(),

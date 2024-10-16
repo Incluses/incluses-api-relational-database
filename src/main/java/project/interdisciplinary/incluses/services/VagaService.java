@@ -49,6 +49,24 @@ public class VagaService {
             return null;
         }
     }
+    public List<Vaga> findByTipoVagaNome(String nome){
+        Optional<List<Vaga>> vagas = vagaRepository.findByTipoVagaNome(nome);
+        if (vagas.isPresent()){
+            return vagas.get();
+        }
+        else {
+            return null;
+        }
+    }
+    public List<Vaga> findByFkEmpresa(UUID fkEmpresa){
+        Optional<List<Vaga>> vagas = vagaRepository.findVagasByFkEmpresaId(fkEmpresa);
+        if (vagas.isPresent()){
+            return vagas.get();
+        }
+        else {
+            return null;
+        }
+    }
     public void criarVaga(CriarVagaDTO criarVagaDTO){
         vagaRepository.criarVaga(criarVagaDTO.getDescricao(), criarVagaDTO.getNome(), criarVagaDTO.getEmpresaId(),criarVagaDTO.getTipoVagaId());
     }

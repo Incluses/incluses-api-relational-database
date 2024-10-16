@@ -7,7 +7,9 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import project.interdisciplinary.incluses.models.Curso;
+import project.interdisciplinary.incluses.models.Usuario;
 import project.interdisciplinary.incluses.models.Vaga;
+import project.interdisciplinary.incluses.models.dto.CriarCursoDTO;
 import project.interdisciplinary.incluses.services.CursoService;
 
 import java.util.*;
@@ -43,7 +45,7 @@ public class CursoController {
     }
 
     @PostMapping("/inserir")
-    public ResponseEntity<Object> inserirCurso(@Valid @RequestBody Curso curso, BindingResult resultado) {
+    public ResponseEntity<Object> inserirCurso(@Valid @RequestBody CriarCursoDTO curso, BindingResult resultado) {
         if (resultado.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             for (FieldError error : resultado.getFieldErrors()) {
@@ -51,14 +53,22 @@ public class CursoController {
             }
             return ResponseEntity.badRequest().body(errors);
         } else {
-            Curso curso1 = cursoService.salvarCurso(curso);
-            if (curso1.getId() == curso.getId()) {
-                Map<String, String> response = new HashMap<>();
-                response.put("message", "ok");
-                return ResponseEntity.ok(response);
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
+            cursoService.criarCurso(curso);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "ok");
+            return ResponseEntity.ok(response);
+        }
+    }
+    @GetMapping("/selecionar-fk-perfil/{fkPerfil}")
+    public Object acharCursoPorFkPerfil(@PathVariable UUID fkPerfil){
+        List<Curso> curso = cursoService.findByFkPerfil(fkPerfil);
+        if(curso != null){
+            return curso;
+        }
+        else {
+            Map<String, String> response = new HashMap<>();
+            response.put("message","nada encontrado");
+            return ResponseEntity.ok(response);
         }
     }
 

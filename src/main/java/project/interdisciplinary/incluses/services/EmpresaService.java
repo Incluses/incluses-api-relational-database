@@ -2,6 +2,7 @@ package project.interdisciplinary.incluses.services;
 
 import org.springframework.stereotype.Service;
 import project.interdisciplinary.incluses.models.Empresa;
+import project.interdisciplinary.incluses.models.Usuario;
 import project.interdisciplinary.incluses.models.dto.CriarEmpresaDTO;
 import project.interdisciplinary.incluses.repositories.EmpresaRepository;
 
@@ -34,6 +35,15 @@ public class EmpresaService {
         }
         else {
             return true;
+        }
+    }
+    public Empresa acharPorFkPerfil(UUID fkPerfil){
+        Optional<Empresa> empresa = empresaRepository.findEmpresaByFkPerfilId(fkPerfil);
+        if(empresa.isPresent()){
+            return empresa.get();
+        }
+        else {
+            return null;
         }
     }
     public void criarEmpresa(CriarEmpresaDTO criarEmpresaDTO){

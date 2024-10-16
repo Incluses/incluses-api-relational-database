@@ -13,6 +13,8 @@ public interface CursoRepository extends JpaRepository<Curso, UUID> {
 
     Optional<List<Curso>> findCursosByNomeContains(String nome);
 
+    Optional<List<Curso>> findCursosByFkPerfilId(UUID fkPerfil);
+
     @Procedure(name = "criar_curso")
     void criarCurso(String descricao, String nome, UUID perfilId);
 

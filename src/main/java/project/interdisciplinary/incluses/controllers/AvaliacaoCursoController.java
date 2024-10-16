@@ -73,28 +73,6 @@ public class AvaliacaoCursoController {
         }
     }
 
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<Object> atualizarAvaliacao(@PathVariable UUID id, @Valid @RequestBody AvaliacaoCurso avaliacaoAtualizada, BindingResult resultado) {
-        if (resultado.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : resultado.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        } else {
-            AvaliacaoCurso avaliacaoExistente = avaliacaoCursoService.buscarAvaliacaoPorId(id);
-            if (avaliacaoExistente == null) {
-                return ResponseEntity.notFound().build();
-            }
-            avaliacaoExistente.setNota(avaliacaoAtualizada.getNota());
-            avaliacaoExistente.setFkCursoId(avaliacaoAtualizada.getFkCursoId());
-            avaliacaoExistente.setFkUsuarioId(avaliacaoAtualizada.getFkUsuarioId());
-            avaliacaoCursoService.salvarAvaliacao(avaliacaoExistente);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Avaliação atualizada com sucesso.");
-            return ResponseEntity.ok(response);
-        }
-    }
 
     @PatchMapping("/atualizarParcial/{id}")
     public ResponseEntity<Object> atualizarAvaliacaoParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
@@ -107,12 +85,6 @@ public class AvaliacaoCursoController {
 
         if (updates.containsKey("nota")) {
             avaliacaoExistente.setNota(Double.parseDouble(updates.get("nota").toString()));
-        }
-        if (updates.containsKey("fkCursoId")) {
-            avaliacaoExistente.setFkCursoId(UUID.fromString((String) updates.get("fkCursoId")));
-        }
-        if (updates.containsKey("fkUsuarioId")) {
-            avaliacaoExistente.setFkUsuarioId(UUID.fromString((String) updates.get("fkUsuarioId")));
         }
 
         // Validate the updated AvaliacaoCurso object
