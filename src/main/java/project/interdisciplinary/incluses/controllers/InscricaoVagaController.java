@@ -8,7 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import project.interdisciplinary.incluses.models.InscricaoCurso;
 import project.interdisciplinary.incluses.models.InscricaoVaga;
+import project.interdisciplinary.incluses.models.dto.CriarInscricaoVagaDTO;
 import project.interdisciplinary.incluses.services.InscricaoVagaService;
 
 import java.util.*;
@@ -33,7 +35,7 @@ public class InscricaoVagaController {
     }
 
     @PostMapping("/inserir")
-    public ResponseEntity<Object> inserirInscricao(@Valid @RequestBody InscricaoVaga inscricaoVaga, BindingResult resultado) {
+    public ResponseEntity<Object> inserirInscricao(@Valid @RequestBody CriarInscricaoVagaDTO inscricaoVaga, BindingResult resultado) {
         if (resultado.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             for (FieldError error : resultado.getFieldErrors()) {
@@ -41,10 +43,27 @@ public class InscricaoVagaController {
             }
             return ResponseEntity.badRequest().body(errors);
         } else {
-            InscricaoVaga novaInscricao = inscricaoVagaService.salvarInscricaoVaga(inscricaoVaga);
+            if(inscricaoVagaService.criarInscricaoVaga(inscricaoVaga)){
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Inscrição inserida com sucesso.");
+                return ResponseEntity.ok(response);
+            }
+            else {
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Inscrição já feita anteriormente.");
+                return ResponseEntity.badRequest().body(response);
+            }
+        }
+    }
+    @GetMapping("/selecionar-fk-usuario/{fkUsuario}")
+    public Object acharCursoPorFkPerfil(@PathVariable UUID fkUsuario){
+        List<InscricaoVaga> inscricaoVagas = inscricaoVagaService.findInscricaoByFkUsuario(fkUsuario);
+        if(inscricaoVagas != null){
+            return inscricaoVagas;
+        }
+        else {
             Map<String, String> response = new HashMap<>();
-            response.put("message", "Inscrição inserida com sucesso.");
-            response.put("id", novaInscricao.getId().toString());
+            response.put("message","nada encontrado");
             return ResponseEntity.ok(response);
         }
     }

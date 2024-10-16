@@ -43,6 +43,29 @@ public class VagaController {
             return null;
         }
     }
+    @GetMapping("/selecionar-nome-tipo/{nome}")
+    public List<Vaga> buscarVagaTipoVagaNome (@PathVariable String nome){
+        List<Vaga> vagas = vagaService.findByTipoVagaNome(nome);
+        if (vagas != null){
+            return vagas;
+        }
+        else {
+            return null;
+        }
+    }
+
+    @GetMapping("/selecionar-fk-empresa/{fkEmpresa}")
+    public List<Vaga> buscarVagaFkEmpresa (@PathVariable UUID fkEmpresa){
+        List<Vaga> vagas = vagaService.findByFkEmpresa(fkEmpresa);
+        if (vagas != null){
+            return vagas;
+        }
+        else {
+            return null;
+        }
+    }
+
+
 
     @PostMapping("/inserir")
     public ResponseEntity<Object> inserirVaga(@Valid @RequestBody CriarVagaDTO vaga, BindingResult resultado) {

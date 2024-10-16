@@ -36,7 +36,32 @@ public class InscricaoVagaService {
         }
         return null;
     }
-    public void criarInscricaoVaga(CriarInscricaoVagaDTO criarInscricaoVagaDTO){
-        inscricaoVagaRepository.criarInscricaoVaga(criarInscricaoVagaDTO.getUsuarioId(), criarInscricaoVagaDTO.getVagaId());
+    public boolean criarInscricaoVaga(CriarInscricaoVagaDTO criarInscricaoVagaDTO){
+        if(validateInscricao(criarInscricaoVagaDTO.getVagaId(), criarInscricaoVagaDTO.getUsuarioId())){
+            inscricaoVagaRepository.criarInscricaoVaga(criarInscricaoVagaDTO.getUsuarioId(), criarInscricaoVagaDTO.getVagaId());
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public boolean validateInscricao(UUID fkVaga, UUID fkUsuario){
+        Optional<InscricaoVaga> inscricaoVaga = inscricaoVagaRepository.findInscricaoExistente(fkVaga, fkUsuario);
+        if (inscricaoVaga.isPresent()){
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+    public List<InscricaoVaga> findInscricaoByFkUsuario(UUID fkUsuario){
+        Optional<List<InscricaoVaga>> inscricaoVaga = inscricaoVagaRepository.findInscricaoVagasByFkUsuarioId(fkUsuario);
+        if (inscricaoVaga.isPresent()){
+            return inscricaoVaga.get();
+        }
+        else {
+            return null;
+        }
     }
 }

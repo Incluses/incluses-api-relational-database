@@ -1,10 +1,13 @@
 package project.interdisciplinary.incluses.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
 import project.interdisciplinary.incluses.models.Empresa;
+import project.interdisciplinary.incluses.models.Usuario;
 
+import java.util.Optional;
 import java.util.UUID;
 
 public interface EmpresaRepository extends JpaRepository<Empresa, UUID> {
@@ -26,5 +29,8 @@ public interface EmpresaRepository extends JpaRepository<Empresa, UUID> {
                       @Param("p_senha") String senha,
                       @Param("p_email") String email,
                       @Param("t_telefone") String telefone);
+
+    @Query("SELECT e FROM Empresa e WHERE e.fkPerfilId = ?1")
+    Optional<Empresa> findEmpresaByFkPerfilId(UUID fkPerfil);
 }
 

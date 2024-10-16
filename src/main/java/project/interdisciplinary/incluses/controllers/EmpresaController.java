@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import project.interdisciplinary.incluses.models.Empresa;
+import project.interdisciplinary.incluses.models.Usuario;
 import project.interdisciplinary.incluses.models.dto.CriarEmpresaDTO;
 import project.interdisciplinary.incluses.services.EmpresaService;
 
@@ -32,6 +33,18 @@ public class EmpresaController {
         return empresaService.listarEmpresas();
     }
 
+    @GetMapping("/selecionar-fk-perfil/{fkPerfil}")
+    public Object acharUsuarioPorFkPerfil(@PathVariable UUID fkPerfil){
+        Empresa empresa = empresaService.acharPorFkPerfil(fkPerfil);
+        if(empresa != null){
+            return empresa;
+        }
+        else {
+            Map<String, String> response = new HashMap<>();
+            response.put("message","nada encontrado");
+            return ResponseEntity.ok(response);
+        }
+    }
     @PostMapping("/public/inserir")
     public ResponseEntity<Object> inserirEmpresa(@Valid @RequestBody CriarEmpresaDTO empresa, BindingResult resultado) {
         if (resultado.hasErrors()) {
