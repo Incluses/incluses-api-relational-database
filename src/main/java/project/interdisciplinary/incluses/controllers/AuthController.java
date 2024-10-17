@@ -36,7 +36,7 @@ public class AuthController {
     }
 
     @PostMapping("/api/auth/login")
-    public Map<String, String> login(@RequestBody LoginRequest loginRequest) {
+    public Map<String, Object> login(@RequestBody LoginRequest loginRequest) {
         Optional<Perfil> users = userRepository.findPerfilByEmail(loginRequest.getEmail());
         if (users.isPresent()){
             Perfil user = users.get();
@@ -50,7 +50,7 @@ public class AuthController {
                             .signWith(secretKey, SignatureAlgorithm.HS512)
                             .compact();
                     logger.info("Generated Token: {}", token);
-                    return Map.of("token", "Bearer " + token, "type", user.getTipoPerfil().getNome());
+                    return Map.of("token", "Bearer " + token, "type", user.getTipoPerfil().getNome(), "perfil", user);
                 } catch (Exception e) {
                     logger.error("Erro ao gerar o token JWT: ", e);
                     throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao gerar o token JWT", e);
