@@ -19,12 +19,11 @@ public class PermissaoVaga {
     @Schema(description = "Permissão de acesso à vaga", example = "false")
     private Boolean permissao = false;
 
-    @NotNull(message = "O fkVagaId não pode ser nulo")
-    @Column(name = "fk_vaga_id", nullable = false)
+    @Column(name = "fk_vaga_id")
     @Schema(description = "ID da vaga", example = "5a9238d7-d3e3-45fe-9de9-69353a542793")
     private UUID fkVagaId;
     @ManyToOne
-    @JoinColumn(name = "id_vaga",nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "id_vaga", insertable = false, updatable = false)
     @Schema(description = "Vaga relacionada à permissão")
     private Vaga vaga;
 

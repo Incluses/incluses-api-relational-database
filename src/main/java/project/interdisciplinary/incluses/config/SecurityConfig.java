@@ -31,8 +31,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login", "/usuario/public/inserir", "/empresa/public/inserir", "/swagger-ui/**", "v3/api-docs/**").permitAll()
 
                         // Endpoints com roles específicas
-                        .requestMatchers("/**").hasRole("EMPRESA")
-                        .requestMatchers("/**").hasRole("USUARIO")
+                        .requestMatchers("/**").hasAnyRole("EMPRESA","USUARIO")
 
                         // Todas as outras requisições devem ser autenticadas
                         .anyRequest().authenticated()
