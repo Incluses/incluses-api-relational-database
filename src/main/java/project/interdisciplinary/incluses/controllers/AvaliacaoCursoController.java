@@ -45,6 +45,18 @@ public class AvaliacaoCursoController {
         }
     }
 
+    @GetMapping("/selecionar-fk-curso/{fkCurso}")
+    public Object acharAvaliacoesPorFkCurso(@PathVariable UUID fkCurso){
+        List<AvaliacaoCurso> avaliacaoCurso = avaliacaoCursoService.acharPorFkCurso(fkCurso);
+        if(avaliacaoCurso != null){
+            return avaliacaoCurso;
+        }
+        else {
+            Map<String, String> response = new HashMap<>();
+            response.put("message","nada encontrado");
+            return ResponseEntity.ok(response);
+        }
+    }
     @PostMapping("/inserir")
     public ResponseEntity<Object> inserirAvaliacao(@Valid @RequestBody AvaliacaoCurso avaliacaoCurso, BindingResult resultado) {
         if (resultado.hasErrors()) {
