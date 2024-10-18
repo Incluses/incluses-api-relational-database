@@ -61,7 +61,7 @@ public class PerfilService implements UserDetailsService {
         }
     }
     public List<Perfil> findByNome(String nome){
-        Optional<List<Perfil>> perfils = perfilRepository.findPerfilsByNomeContains(nome);
+        Optional<List<Perfil>> perfils = perfilRepository.findPerfilsByNomeContainsIgnoreCase(nome);
         if (perfils.isPresent()){
             return perfils.get();
         }

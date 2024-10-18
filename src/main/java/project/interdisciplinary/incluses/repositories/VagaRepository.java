@@ -19,7 +19,7 @@ public interface VagaRepository extends JpaRepository<Vaga, UUID> {
                    @Param("v_empresa_id") UUID empresaId,
                    @Param("v_tipo_vaga_id") UUID tipoVagaId);
 
-    Optional<List<Vaga>> findVagasByNomeContains(String nome);
+    Optional<List<Vaga>> findVagasByNomeContainsIgnoreCase(String nome);
     @Procedure(name = "deletar_vaga")
     void deletarVaga(UUID[] v_uuids);
 
