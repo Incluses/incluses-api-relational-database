@@ -30,6 +30,15 @@ public class AvaliacaoCursoService {
             return null;
         }
     }
+    public List<AvaliacaoCurso> acharPorFkCurso(UUID fkCurso){
+        Optional<List<AvaliacaoCurso>> avaliacaoCursos = avaliacaoCursoRepository.findAvaliacaoCursosByFkCurso(fkCurso);
+        if(avaliacaoCursos.isPresent()){
+            return avaliacaoCursos.get();
+        }
+        else {
+            return null;
+        }
+    }
     public AvaliacaoCurso salvarAvaliacao(AvaliacaoCurso avaliacaoCurso){
         return avaliacaoCursoRepository.save(avaliacaoCurso);
     }

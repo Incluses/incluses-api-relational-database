@@ -40,7 +40,7 @@ public class CursoService {
         }
     }
     public List<Curso> findByNome(String nome){
-        Optional<List<Curso>> cursos = cursoRepository.findCursosByNomeContains(nome);
+        Optional<List<Curso>> cursos = cursoRepository.findCursosByNomeContainsIgnoreCase(nome);
         if (cursos.isPresent()){
             return cursos.get();
         }

@@ -41,7 +41,7 @@ public class VagaService {
         }
     }
     public List<Vaga> findByNome(String nome){
-        Optional<List<Vaga>> vagas = vagaRepository.findVagasByNomeContains(nome);
+        Optional<List<Vaga>> vagas = vagaRepository.findVagasByNomeContainsIgnoreCase(nome);
         if (vagas.isPresent()){
             return vagas.get();
         }

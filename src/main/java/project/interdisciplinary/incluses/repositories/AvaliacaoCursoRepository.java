@@ -12,4 +12,7 @@ public interface AvaliacaoCursoRepository extends JpaRepository<AvaliacaoCurso, 
 
     @Query("SELECT a FROM AvaliacaoCurso a WHERE a.fkUsuarioId = ?1")
     Optional<List<AvaliacaoCurso>> findAvaliacaoCursosByFkUsuario(UUID fkUsuario);
+
+    @Query("SELECT a FROM AvaliacaoCurso a WHERE a.fkCursoId = ?1")
+    Optional<List<AvaliacaoCurso>> findAvaliacaoCursosByFkCurso(UUID fkCurso);
 }
