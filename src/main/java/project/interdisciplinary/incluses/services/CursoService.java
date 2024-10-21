@@ -58,8 +58,7 @@ public class CursoService {
         }
     }
 
-    public void criarCurso(CriarCursoDTO criarCursoDTO){
-        cursoRepository.criarCurso(criarCursoDTO.getDescricao(), criarCursoDTO.getNome(),
-                criarCursoDTO.getPerfilId());
+    public UUID criarCurso(CriarCursoDTO criarCursoDTO){
+        return cursoRepository.criarCurso(criarCursoDTO.getDescricao(), criarCursoDTO.getNome(), criarCursoDTO.getPerfilId());
     }
 }

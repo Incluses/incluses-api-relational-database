@@ -6,4 +6,5 @@ import project.interdisciplinary.incluses.models.PermissaoCurso;
 import java.util.UUID;
 
 public interface PermissaoCursoRepository extends JpaRepository<PermissaoCurso, UUID> {
+
 }
