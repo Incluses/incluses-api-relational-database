@@ -14,6 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import project.interdisciplinary.incluses.models.Arquivo;
+import project.interdisciplinary.incluses.models.Perfil;
 import project.interdisciplinary.incluses.services.ArquivoService;
 
 import java.util.*;
@@ -38,6 +39,17 @@ public class ArquivoController {
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")})
     public List<Arquivo> listarArquivos() {
         return arquivoService.listarArquivos();
+    }
+
+    @GetMapping("/selecionar-id/{id}")
+    public Arquivo listarArquivoPorId(@PathVariable UUID id){
+        Arquivo arquivo = arquivoService.buscarArquivoPorId(id);
+        if (arquivo != null){
+            return arquivo;
+        }
+        else {
+            return null;
+        }
     }
 
     @PostMapping("/inserir")

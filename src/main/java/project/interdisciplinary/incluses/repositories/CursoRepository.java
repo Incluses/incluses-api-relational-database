@@ -17,10 +17,15 @@ public interface CursoRepository extends JpaRepository<Curso, UUID> {
 
     Optional<List<Curso>> findCursosByFkPerfilId(UUID fkPerfil);
 
-    @Query(value = "CALL criar_curso(:descricao, :nome, :perfilId, @p_id_curso); SELECT @p_id_curso;", nativeQuery = true)
+    @Query("SELECT c FROM Curso c JOIN PermissaoCurso pc ON c.id = pc.curso.id WHERE pc.permissao = true")
+    List<Curso> findAllPermissao();
+
+
+    @Query(value = "SELECT criar_curso(:descricao, :nome, :perfilId)", nativeQuery = true)
     UUID criarCurso(@Param("descricao") String descricao,
                     @Param("nome") String nome,
                     @Param("perfilId") UUID perfilId);
+
 
     @Procedure(name = "deletar_curso")
     void deletarCurso(UUID[] c_uuids);

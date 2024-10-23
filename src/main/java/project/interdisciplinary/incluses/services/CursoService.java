@@ -17,7 +17,7 @@ public class CursoService {
         this.cursoRepository  = cursoRepository;
     }
     public List<Curso> listarCursos() {
-        return cursoRepository.findAll();
+        return cursoRepository.findAllPermissao();
     }
 
     public Curso salvarCurso(Curso curso){

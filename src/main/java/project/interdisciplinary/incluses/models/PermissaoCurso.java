@@ -21,7 +21,7 @@ public class PermissaoCurso {
     @Column(name = "fk_curso_id")
     @Schema(description = "Fk do curso que o usuario se inscreve", example = "5a9238d7-d3e3-45fe-9de9-69353a542793")
     private UUID fkCursoId;
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "fk_curso_id",nullable = false, insertable = false, updatable = false)
     @Schema(description = "Curso relacionado à permissão")
     private Curso curso;
