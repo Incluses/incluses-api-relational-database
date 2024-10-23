@@ -53,9 +53,9 @@ public class CursoController {
             }
             return ResponseEntity.badRequest().body(errors);
         } else {
-            cursoService.criarCurso(curso);
+            UUID id = cursoService.criarCurso(curso);
             Map<String, String> response = new HashMap<>();
-            response.put("message", "ok");
+            response.put("id", id.toString());
             return ResponseEntity.ok(response);
         }
     }

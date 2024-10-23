@@ -40,6 +40,8 @@ public class Curso {
     @JoinColumn(name = "fk_perfil_id", nullable = false, insertable = false, updatable = false)
     private Perfil perfil;
 
+
+
     // Getters and Setters
 
     public Perfil getPerfil() {

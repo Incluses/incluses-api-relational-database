@@ -17,7 +17,7 @@ public class CursoService {
         this.cursoRepository  = cursoRepository;
     }
     public List<Curso> listarCursos() {
-        return cursoRepository.findAll();
+        return cursoRepository.findAllPermissao();
     }
 
     public Curso salvarCurso(Curso curso){
@@ -58,8 +58,7 @@ public class CursoService {
         }
     }
 
-    public void criarCurso(CriarCursoDTO criarCursoDTO){
-        cursoRepository.criarCurso(criarCursoDTO.getDescricao(), criarCursoDTO.getNome(),
-                criarCursoDTO.getPerfilId());
+    public UUID criarCurso(CriarCursoDTO criarCursoDTO){
+        return cursoRepository.criarCurso(criarCursoDTO.getDescricao(), criarCursoDTO.getNome(), criarCursoDTO.getPerfilId());
     }
 }

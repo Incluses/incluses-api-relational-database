@@ -11,7 +11,6 @@ import java.util.UUID;
 
 public interface PerfilRepository extends JpaRepository<Perfil, UUID> {
     Optional<Perfil> findPerfilByEmail(String username);
-
     Optional<List<Perfil>> findPerfilsByNomeContainsIgnoreCase(String username);
 
 }

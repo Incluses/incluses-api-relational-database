@@ -31,6 +31,17 @@ public class PerfilController {
         return perfilService.listarPerfis();
     }
 
+    @GetMapping("/selecionar-id/{id}")
+    public Perfil listarPerfilPorId(@PathVariable UUID id){
+        Perfil perfil = perfilService.buscarPerfilPorId(id);
+        if (perfil != null){
+            return perfil;
+        }
+        else {
+            return null;
+        }
+    }
+
     @GetMapping("/selecionar-email/{email}")
     public Perfil buscarPerfil (@PathVariable String email){
         Perfil perfil = perfilService.findByEmail(email);
