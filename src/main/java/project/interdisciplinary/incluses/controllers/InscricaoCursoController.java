@@ -79,6 +79,18 @@ public class InscricaoCursoController {
             return ResponseEntity.ok(response);
         }
     }
+    @GetMapping("/selecionar-acessos/{fkCurso}")
+    public Object contarInscricoesCurso(@PathVariable UUID fkCurso){
+        List<InscricaoCurso> inscricaoCursos = inscricaoCursoService.findInscricaoByFkCurso(fkCurso);
+        Map<String, Integer> response = new HashMap<>();
+        if(inscricaoCursos != null){
+            response.put("number",inscricaoCursos.size());
+        }
+        else {
+            response.put("number",0);
+        }
+        return ResponseEntity.ok(response);
+    }
 
     @DeleteMapping("/excluir/{id}")
     public ResponseEntity<Object> excluirInscricao(@PathVariable UUID id) {
