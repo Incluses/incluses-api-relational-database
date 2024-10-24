@@ -56,8 +56,20 @@ public class InscricaoCursoController {
         }
     }
     @GetMapping("/selecionar-fk-usuario/{fkUsuario}")
-    public Object acharCursoPorFkPerfil(@PathVariable UUID fkUsuario){
+    public Object acharInscricaoCursoPorFkPerfil(@PathVariable UUID fkUsuario){
         List<InscricaoCurso> inscricaoCursos = inscricaoCursoService.findInscricaoByFkUsuario(fkUsuario);
+        if(inscricaoCursos != null){
+            return inscricaoCursos;
+        }
+        else {
+            Map<String, String> response = new HashMap<>();
+            response.put("message","nada encontrado");
+            return ResponseEntity.ok(response);
+        }
+    }
+    @GetMapping("/selecionar-fk-curso/{fkCurso}")
+    public Object acharInscricaoCursoPorFkCurso(@PathVariable UUID fkCurso){
+        List<InscricaoCurso> inscricaoCursos = inscricaoCursoService.findInscricaoByFkCurso(fkCurso);
         if(inscricaoCursos != null){
             return inscricaoCursos;
         }

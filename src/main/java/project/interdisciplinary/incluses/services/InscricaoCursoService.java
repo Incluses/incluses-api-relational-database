@@ -63,4 +63,13 @@ public class InscricaoCursoService {
             return null;
         }
     }
+    public List<InscricaoCurso> findInscricaoByFkCurso(UUID fkCurso){
+        Optional<List<InscricaoCurso>> inscricaoCurso = inscricaoCursoRepository.findInscricaoCursosByFkCursoId(fkCurso);
+        if (inscricaoCurso.isPresent()){
+            return inscricaoCurso.get();
+        }
+        else {
+            return null;
+        }
+    }
 }

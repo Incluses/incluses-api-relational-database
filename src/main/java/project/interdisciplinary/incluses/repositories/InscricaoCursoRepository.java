@@ -22,5 +22,6 @@ public interface InscricaoCursoRepository extends JpaRepository<InscricaoCurso, 
 
     Optional<List<InscricaoCurso>> findInscricaoCursosByFkUsuarioId(UUID fkUsuario);
 
+    Optional<List<InscricaoCurso>> findInscricaoCursosByFkCursoId(UUID fkCurso);
 }
 
