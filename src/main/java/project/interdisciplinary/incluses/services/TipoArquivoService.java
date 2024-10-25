@@ -1,6 +1,7 @@
 package project.interdisciplinary.incluses.services;
 
 import org.springframework.stereotype.Service;
+import project.interdisciplinary.incluses.models.Curso;
 import project.interdisciplinary.incluses.models.TipoArquivo;
 import project.interdisciplinary.incluses.repositories.TipoArquivoRepository;
 
@@ -32,5 +33,14 @@ public class TipoArquivoService {
             return tipo.get();
         }
         return null;
+    }
+    public TipoArquivo findByNome(String nome){
+        Optional<TipoArquivo> tipo = tipoArquivoRepository.findByNomeIgnoreCase(nome);
+        if (tipo.isPresent()){
+            return tipo.get();
+        }
+        else {
+            return null;
+        }
     }
 }

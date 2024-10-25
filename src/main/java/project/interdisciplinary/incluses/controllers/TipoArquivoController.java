@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import project.interdisciplinary.incluses.models.Arquivo;
+import project.interdisciplinary.incluses.models.Curso;
 import project.interdisciplinary.incluses.models.TipoArquivo;
 import project.interdisciplinary.incluses.services.TipoArquivoService;
 
@@ -27,6 +29,18 @@ public class TipoArquivoController {
     @GetMapping("/selecionar")
     public List<TipoArquivo> listarTipoArquivos() {
         return tipoArquivoService.listarTipoArquivos();
+    }
+    @GetMapping("/selecionar-nome/{nome}")
+    public TipoArquivo buscarTipoPorNome (@PathVariable String nome){
+        TipoArquivo tipo = tipoArquivoService.findByNome(nome);
+        if (tipo != null){
+            return tipo;
+        }
+        else {
+            TipoArquivo tipoArquivo = new TipoArquivo();
+            tipoArquivo.setNome(nome);
+            return tipoArquivoService.salvarTipoArquivo(tipoArquivo);
+        }
     }
 
     @PostMapping("/inserir")
