@@ -31,15 +31,16 @@ public class TipoArquivoController {
         return tipoArquivoService.listarTipoArquivos();
     }
     @GetMapping("/selecionar-nome/{nome}")
-    public Object buscarTipoPorNome (@PathVariable String nome){
+    public TipoArquivo buscarTipoPorNome (@PathVariable String nome){
         TipoArquivo tipo = tipoArquivoService.findByNome(nome);
         if (tipo != null){
             return tipo;
         }
         else {
-            Map<String, String> response = new HashMap<>();
-            response.put("message","nada encontrado");
-            return ResponseEntity.ok(response);        }
+            TipoArquivo tipoArquivo = new TipoArquivo();
+            tipoArquivo.setNome(nome);
+            return tipoArquivoService.salvarTipoArquivo(tipoArquivo);
+        }
     }
 
     @PostMapping("/inserir")
