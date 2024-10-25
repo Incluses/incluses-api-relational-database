@@ -52,4 +52,13 @@ public class MaterialCursoService {
             return null;
         }
     }
+    public List<MaterialCurso> findMaterialByNome(UUID fkCurso, String nome){
+        Optional<List<MaterialCurso>> materialCursos = materialCursoRepository.findMaterialCursosByFkCursoIdAndNomeContainsIgnoreCase(fkCurso,nome);
+        if (materialCursos.isPresent()){
+            return materialCursos.get();
+        }
+        else {
+            return null;
+        }
+    }
 }

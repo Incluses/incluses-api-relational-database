@@ -43,6 +43,17 @@ public class MaterialCursoController {
             return null;
         }
     }
+    @GetMapping("/selecionar-nome/{nome}/{fkCurso}")
+    public List<MaterialCurso> buscarMaterialPorNome(@PathVariable("nome") String nome,@PathVariable("fkCurso") UUID fkCurso){
+        List<MaterialCurso> materialCursos = materialCursoService.findMaterialByNome(fkCurso, nome);
+        if (materialCursos != null){
+            return materialCursos;
+        }
+        else {
+            return null;
+        }
+    }
+
     @PostMapping("/inserir")
     public ResponseEntity<Object> inserirMaterialCurso(@Valid @RequestBody CriarMaterialCursoDTO materialCurso, BindingResult resultado) {
         if (resultado.hasErrors()) {

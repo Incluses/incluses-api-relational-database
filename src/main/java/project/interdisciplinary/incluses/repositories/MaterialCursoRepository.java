@@ -3,6 +3,7 @@ package project.interdisciplinary.incluses.repositories;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
+import project.interdisciplinary.incluses.models.Curso;
 import project.interdisciplinary.incluses.models.MaterialCurso;
 
 import java.util.List;
@@ -20,5 +21,8 @@ public interface MaterialCursoRepository extends JpaRepository<MaterialCurso, UU
     void deleteMaterialCurso(UUID mcMaterialCursoId);
 
     Optional<List<MaterialCurso>> findMaterialCursosByFkCursoId(UUID fkCurso);
+
+    Optional<List<MaterialCurso>> findMaterialCursosByFkCursoIdAndNomeContainsIgnoreCase(UUID fkCurso, String nome);
+
 }
 
