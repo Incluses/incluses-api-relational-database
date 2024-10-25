@@ -73,7 +73,7 @@ public class ArquivoController {
         } else {
             Arquivo arquivo1 = arquivoService.salvarArquivo(arquivo);
             if (arquivo1.getId() == arquivo.getId()) {
-                return ResponseEntity.ok("Inserido com sucesso");
+                return ResponseEntity.ok(arquivo1);
             } else {
                 return ResponseEntity.badRequest().build();
             }
