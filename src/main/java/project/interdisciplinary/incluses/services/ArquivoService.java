@@ -1,8 +1,10 @@
 package project.interdisciplinary.incluses.services;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import project.interdisciplinary.incluses.models.Arquivo;
 import project.interdisciplinary.incluses.repositories.ArquivoRepository;
+
 
 import java.util.List;
 import java.util.Optional;
@@ -10,6 +12,7 @@ import java.util.UUID;
 
 @Service
 public class ArquivoService {
+
     private final ArquivoRepository arquivoRepository;
     public ArquivoService(ArquivoRepository arquivoRepository) {
         this.arquivoRepository = arquivoRepository;
