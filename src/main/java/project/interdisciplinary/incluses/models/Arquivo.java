@@ -37,7 +37,6 @@ public class Arquivo {
     private String tamanho;
 
     @NotNull(message = "a fkTipoArquivoId não pode ser nula")
-    @Min(value = 0, message = "a fkTipoArquivoId não pode conter valores negativos")
     @Column(name = "fk_tipo_arquivo_id")
     @Schema(description = "Fk do tipo do arquivo", example = "5a9238d7-d3e3-45fe-9de9-69353a542793")
     private UUID fkTipoArquivoId;

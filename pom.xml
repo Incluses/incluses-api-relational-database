@@ -14,12 +14,6 @@
     <name>InclusesAPI</name>
     <description>InclusesAPI</description>
     <url/>
-    <repositories>
-        <repository>
-            <id>central</id>
-            <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
-    </repositories>
     <licenses>
         <license/>
     </licenses>
