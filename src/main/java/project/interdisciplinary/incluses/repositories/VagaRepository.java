@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
+import project.interdisciplinary.incluses.models.Curso;
 import project.interdisciplinary.incluses.models.Perfil;
 import project.interdisciplinary.incluses.models.Vaga;
 
@@ -19,13 +20,20 @@ public interface VagaRepository extends JpaRepository<Vaga, UUID> {
                    @Param("v_empresa_id") UUID empresaId,
                    @Param("v_tipo_vaga_id") UUID tipoVagaId);
 
+    @Query("SELECT v FROM Vaga v \n" +
+            "JOIN PermissaoVaga pv ON v.id = pv.vaga.id \n" +
+            "WHERE pv.permissao = true \n" +
+            "AND LOWER(v.nome) LIKE LOWER(CONCAT('%', :nome, '%'))")
     Optional<List<Vaga>> findVagasByNomeContainsIgnoreCase(String nome);
     @Procedure(name = "deletar_vaga")
     void deletarVaga(UUID[] v_uuids);
 
-    @Query("SELECT v FROM Vaga v " +
+    @Query("SELECT v FROM Vaga v JOIN PermissaoVaga pv ON v.id = pv.vaga.id WHERE pv.permissao = true")
+    List<Vaga> findAllPermissao();
+
+    @Query("SELECT v FROM Vaga v JOIN PermissaoVaga pv ON v.id = pv.vaga.id " +
             "JOIN v.tipoVaga tv " +
-            "WHERE tv.nome = :nomeTipoVaga")
+            "WHERE tv.nome = :nomeTipoVaga AND pv.permissao = true")
     Optional<List<Vaga>> findByTipoVagaNome(@Param("nomeTipoVaga") String nomeTipoVaga);
 
     Optional<List<Vaga>> findVagasByFkEmpresaId(UUID fkEmpresaId);

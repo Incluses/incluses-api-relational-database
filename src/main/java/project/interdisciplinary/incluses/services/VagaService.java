@@ -18,7 +18,7 @@ public class VagaService {
         this.vagaRepository = vagaRepository;
     }
     public List<Vaga> listarVagas() {
-        return vagaRepository.findAll();
+        return vagaRepository.findAllPermissao();
     }
 
     public Vaga salvarVaga(Vaga Vaga){

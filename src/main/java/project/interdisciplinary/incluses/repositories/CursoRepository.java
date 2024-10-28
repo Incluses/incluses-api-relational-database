@@ -21,6 +21,8 @@ public interface CursoRepository extends JpaRepository<Curso, UUID> {
 
     Optional<List<Curso>> findCursosByFkPerfilId(UUID fkPerfil);
 
+    Optional<List<Curso>> findCursosByFkPerfilIdAndNomeContainingIgnoreCase(UUID fkPerfil, String nome);
+
     @Query("SELECT c FROM Curso c JOIN PermissaoCurso pc ON c.id = pc.curso.id WHERE pc.permissao = true")
     List<Curso> findAllPermissao();
 
