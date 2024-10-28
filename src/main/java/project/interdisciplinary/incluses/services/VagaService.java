@@ -1,5 +1,6 @@
 package project.interdisciplinary.incluses.services;
 
+import org.apache.juli.logging.Log;
 import org.springframework.stereotype.Service;
 import project.interdisciplinary.incluses.models.Curso;
 import project.interdisciplinary.incluses.models.Perfil;
@@ -41,7 +42,7 @@ public class VagaService {
         }
     }
     public List<Vaga> findByNome(String nome){
-        Optional<List<Vaga>> vagas = vagaRepository.findVagasByNomeContainsIgnoreCase(nome);
+        Optional<List<Vaga>> vagas = vagaRepository.findVagasByNomeContainsIgnoreCase(nome.toLowerCase());
         if (vagas.isPresent()){
             return vagas.get();
         }
