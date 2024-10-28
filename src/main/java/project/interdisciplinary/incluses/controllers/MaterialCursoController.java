@@ -127,7 +127,7 @@ public class MaterialCursoController {
         }
         if (updates.containsKey("fkArquivoId")) {
             try {
-                materialCurso.setFkArquivoId(((UUID) updates.get("fkArquivoId")));
+                materialCurso.setFkArquivoId(UUID.fromString((String) updates.get("fkArquivoId")));
             } catch (ClassCastException e) {
                 response.put("message", "Arquivo inválido.");
                 return ResponseEntity.badRequest().body(response);
