@@ -43,6 +43,17 @@ public class CursoController {
             return null;
         }
     }
+    @GetMapping("/selecionar-perfil-nome/{fkPerfil}/{nome}")
+    public List<Curso> buscarCursoNome (@PathVariable("fkPerfil") UUID fkPerfil,
+                                        @PathVariable("nome") String nome){
+        List<Curso> cursos = cursoService.findMyCursoByNome(fkPerfil,nome);
+        if (cursos != null){
+            return cursos;
+        }
+        else {
+            return null;
+        }
+    }
 
     @PostMapping("/inserir")
     public ResponseEntity<Object> inserirCurso(@Valid @RequestBody CriarCursoDTO curso, BindingResult resultado) {

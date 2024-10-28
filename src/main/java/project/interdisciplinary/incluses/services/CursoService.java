@@ -2,6 +2,7 @@ package project.interdisciplinary.incluses.services;
 
 import org.springframework.stereotype.Service;
 import project.interdisciplinary.incluses.models.Curso;
+import project.interdisciplinary.incluses.models.MaterialCurso;
 import project.interdisciplinary.incluses.models.Vaga;
 import project.interdisciplinary.incluses.models.dto.CriarCursoDTO;
 import project.interdisciplinary.incluses.repositories.CursoRepository;
@@ -50,6 +51,15 @@ public class CursoService {
     }
     public List<Curso> findByFkPerfil(UUID fkPerfil){
         Optional<List<Curso>> cursos = cursoRepository.findCursosByFkPerfilId(fkPerfil);
+        if (cursos.isPresent()){
+            return cursos.get();
+        }
+        else {
+            return null;
+        }
+    }
+    public List<Curso> findMyCursoByNome(UUID fkPerfil, String nome){
+        Optional<List<Curso>> cursos = cursoRepository.findCursosByFkPerfilIdAndNomeContainingIgnoreCase(fkPerfil,nome);
         if (cursos.isPresent()){
             return cursos.get();
         }
