@@ -59,7 +59,7 @@ public class CursoService {
         }
     }
     public List<Curso> findMyCursoByNome(UUID fkPerfil, String nome){
-        Optional<List<Curso>> cursos = cursoRepository.findCursosByFkPerfilIdAndNomeContainingIgnoreCase(fkPerfil,nome);
+        Optional<List<Curso>> cursos = cursoRepository.findCursosByFkPerfilIdAndNomeContainingIgnoreCase(fkPerfil,nome.toLowerCase());
         if (cursos.isPresent()){
             return cursos.get();
         }

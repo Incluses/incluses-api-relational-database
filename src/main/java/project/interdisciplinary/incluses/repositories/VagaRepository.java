@@ -20,18 +20,19 @@ public interface VagaRepository extends JpaRepository<Vaga, UUID> {
                    @Param("v_empresa_id") UUID empresaId,
                    @Param("v_tipo_vaga_id") UUID tipoVagaId);
 
-    @Query("SELECT v FROM Vaga v \n" +
-            "JOIN PermissaoVaga pv ON v.id = pv.vaga.id \n" +
-            "WHERE pv.permissao = true \n" +
+    @Query("SELECT v FROM Vaga v " +
+            "JOIN PermissaoVaga pv ON v.id = pv.fkVagaId " +
+            "WHERE pv.permissao = true " +
             "AND LOWER(v.nome) LIKE LOWER(CONCAT('%', :nome, '%'))")
-    Optional<List<Vaga>> findVagasByNomeContainsIgnoreCase(String nome);
+    Optional<List<Vaga>> findVagasByNomeContainsIgnoreCase(@Param("nome") String nome);
+
     @Procedure(name = "deletar_vaga")
     void deletarVaga(UUID[] v_uuids);
 
-    @Query("SELECT v FROM Vaga v JOIN PermissaoVaga pv ON v.id = pv.vaga.id WHERE pv.permissao = true")
+    @Query("SELECT v FROM Vaga v JOIN PermissaoVaga pv ON v.id = pv.fkVagaId WHERE pv.permissao = true")
     List<Vaga> findAllPermissao();
 
-    @Query("SELECT v FROM Vaga v JOIN PermissaoVaga pv ON v.id = pv.vaga.id " +
+    @Query("SELECT v FROM Vaga v JOIN PermissaoVaga pv ON v.id = pv.fkVagaId " +
             "JOIN v.tipoVaga tv " +
             "WHERE tv.nome = :nomeTipoVaga AND pv.permissao = true")
     Optional<List<Vaga>> findByTipoVagaNome(@Param("nomeTipoVaga") String nomeTipoVaga);
