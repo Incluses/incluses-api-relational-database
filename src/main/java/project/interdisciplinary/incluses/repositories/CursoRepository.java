@@ -13,6 +13,10 @@ import java.util.UUID;
 
 public interface CursoRepository extends JpaRepository<Curso, UUID> {
 
+    @Query("SELECT c FROM Curso c \n" +
+            "JOIN PermissaoCurso pc ON c.id = pc.curso.id \n" +
+            "WHERE pc.permissao = true \n" +
+            "AND LOWER(c.nome) LIKE LOWER(CONCAT('%', :nome, '%'))")
     Optional<List<Curso>> findCursosByNomeContainsIgnoreCase(String nome);
 
     Optional<List<Curso>> findCursosByFkPerfilId(UUID fkPerfil);
