@@ -93,6 +93,7 @@ public class PerfilController {
             return ResponseEntity.ok(response);        }
     }
 
+
     @PatchMapping("/atualizarParcial/{id}")
     public ResponseEntity<Object> atualizarPerfilParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         Perfil perfil = perfilService.buscarPerfilPorId(id);
@@ -116,9 +117,17 @@ public class PerfilController {
         }
         if (updates.containsKey("fkTipoPerfilId")) {
             try {
-                perfil.setFkTipoPerfilId(((UUID) updates.get("fkTipoPerfilId")));
+                perfil.setFkTipoPerfilId(UUID.fromString((String) updates.get("fkTipoPerfilId")));
             } catch (ClassCastException e) {
                 response.put("message", "Tipo de perfil inválido.");
+                return ResponseEntity.badRequest().body(response);
+            }
+        }
+        if (updates.containsKey("fkFtPerfilId")) {
+            try {
+                perfil.setFkFtPerfilId(UUID.fromString((String) updates.get("fkFtPerfilId")));
+            } catch (ClassCastException e) {
+                response.put("message", "Foto de perfil inválida.");
                 return ResponseEntity.badRequest().body(response);
             }
         }
@@ -133,8 +142,10 @@ public class PerfilController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        perfilService.salvarPerfil(perfil);
+        perfilService.salvarPerfil(perfil); // Supondo que você tenha um método para salvar o Perfil
         response.put("message", "ok");
-        return ResponseEntity.ok(response);    }
+        return ResponseEntity.ok(response);
+    }
+
 }
 
