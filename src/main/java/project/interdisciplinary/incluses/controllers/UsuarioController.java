@@ -10,6 +10,8 @@ import project.interdisciplinary.incluses.models.Usuario;
 import project.interdisciplinary.incluses.models.dto.CriarUsuarioDTO;
 import project.interdisciplinary.incluses.services.UsuarioService;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import jakarta.validation.ConstraintViolation;
@@ -109,14 +111,34 @@ public class UsuarioController {
         }
         if (updates.containsKey("fkPerfilId")) {
             try {
-                usuario.setFkPerfilId(((UUID) updates.get("fkPerfilId")));
+                usuario.setFkPerfilId(UUID.fromString((String) updates.get("fkPerfilId")));
             } catch (ClassCastException e) {
-                response.put("message","Perfil inválido.");
+                response.put("message", "Perfil inválido.");
+                return ResponseEntity.badRequest().body(response);
+            }
+        }
+        if (updates.containsKey("fkCurriculoId")) {
+            try {
+                usuario.setFkCurriculoId(UUID.fromString((String) updates.get("fkCurriculoId")));
+            } catch (ClassCastException e) {
+                response.put("message", "Currículo inválido.");
                 return ResponseEntity.badRequest().body(response);
             }
         }
         if (updates.containsKey("dtNascimento")) {
-            usuario.setDtNascimento((Date) updates.get("dtNascimento"));
+            try {
+                Date dtNascimento = new SimpleDateFormat("dd/MM/yyyy").parse((String) updates.get("dtNascimento"));
+                usuario.setDtNascimento(dtNascimento);
+            } catch (ParseException e) {
+                response.put("message", "Data de nascimento inválida.");
+                return ResponseEntity.badRequest().body(response);
+            }
+        }
+        if (updates.containsKey("pronomes")) {
+            usuario.setPronomes((String) updates.get("pronomes"));
+        }
+        if (updates.containsKey("nomeSocial")) {
+            usuario.setNomeSocial((String) updates.get("nomeSocial"));
         }
 
         // Validate the updated Usuario object
@@ -128,8 +150,11 @@ public class UsuarioController {
             }
             return ResponseEntity.badRequest().body(errors);
         }
+
         usuarioService.salvarUsuario(usuario);
-        response.put("message","ok");
-        return ResponseEntity.ok(response);    }
+        response.put("message", "ok");
+        return ResponseEntity.ok(response);
+    }
+
 }
 
