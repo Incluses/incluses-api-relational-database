@@ -119,7 +119,7 @@ public class MaterialCursoController {
         }
         if (updates.containsKey("fkCursoId")) {
             try {
-                materialCurso.setFkCursoId(((UUID) updates.get("fkCursoId")));
+                materialCurso.setFkCursoId(UUID.fromString((String) updates.get("fkCursoId")));
             } catch (ClassCastException e) {
                 response.put("message", "Curso inválido.");
                 return ResponseEntity.badRequest().body(response);
