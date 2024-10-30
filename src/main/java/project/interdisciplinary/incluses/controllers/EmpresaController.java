@@ -114,24 +114,33 @@ public class EmpresaController {
         }
         if (updates.containsKey("fkPerfilId")) {
             try {
-                empresa.setFkPerfilId(((UUID) updates.get("fkPerfilId")));
-            } catch (ClassCastException e) {
+                empresa.setFkPerfilId(UUID.fromString((String) updates.get("fkPerfilId")));
+            } catch (ClassCastException | IllegalArgumentException e) {
                 response.put("message", "Perfil inválido.");
-                return ResponseEntity.badRequest().body(response);            }
+                return ResponseEntity.badRequest().body(response);
+            }
         }
         if (updates.containsKey("website")) {
             empresa.setWebsite((String) updates.get("website"));
         }
         if (updates.containsKey("fkEnderecoId")) {
             try {
-                empresa.setFkEnderecoId(((UUID) updates.get("fkEnderecoId")));
-            } catch (ClassCastException e) {
+                empresa.setFkEnderecoId(UUID.fromString((String) updates.get("fkEnderecoId")));
+            } catch (ClassCastException | IllegalArgumentException e) {
                 response.put("message", "Endereço inválido.");
                 return ResponseEntity.badRequest().body(response);
             }
         }
+        if (updates.containsKey("fkSetorId")) {
+            try {
+                empresa.setFkSetorId(UUID.fromString((String) updates.get("fkSetorId")));
+            } catch (ClassCastException | IllegalArgumentException e) {
+                response.put("message", "Setor inválido.");
+                return ResponseEntity.badRequest().body(response);
+            }
+        }
 
-        // Validate the updated Empresa object
+        // Validação do objeto `Empresa` atualizado
         Set<ConstraintViolation<Empresa>> violations = validator.validate(empresa);
         if (!violations.isEmpty()) {
             Map<String, String> errors = new HashMap<>();
@@ -141,7 +150,8 @@ public class EmpresaController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        empresaService.salvarEmpresa(empresa);
-        response.put("message", "ok");
-        return ResponseEntity.ok(response);    }
+        Empresa empresa1 = empresaService.salvarEmpresa(empresa);
+        return ResponseEntity.ok(empresa1);
+    }
+
 }

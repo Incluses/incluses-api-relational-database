@@ -142,9 +142,8 @@ public class PerfilController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        perfilService.salvarPerfil(perfil); // Supondo que você tenha um método para salvar o Perfil
-        response.put("message", "ok");
-        return ResponseEntity.ok(response);
+        Perfil perfil2 = perfilService.salvarPerfil(perfil); // Supondo que você tenha um método para salvar o Perfil
+        return ResponseEntity.ok(perfil2);
     }
 
 }
