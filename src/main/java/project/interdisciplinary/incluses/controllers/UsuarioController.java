@@ -151,9 +151,8 @@ public class UsuarioController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        usuarioService.salvarUsuario(usuario);
-        response.put("message", "ok");
-        return ResponseEntity.ok(response);
+        Usuario usuario2 = usuarioService.salvarUsuario(usuario);
+        return ResponseEntity.ok(usuario2);
     }
 
 }
