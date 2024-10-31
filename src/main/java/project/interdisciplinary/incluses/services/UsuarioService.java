@@ -31,7 +31,7 @@ public class UsuarioService {
 
     public void registrarUsuario(CriarUsuarioDTO criarUsuarioDTO){
         usuarioRepository.criarUsuario(criarUsuarioDTO.getCpf(),criarUsuarioDTO.getDtNascimento(),criarUsuarioDTO.getPronomes(),
-                criarUsuarioDTO.getNomeSocial(), criarUsuarioDTO.getNome(), criarUsuarioDTO.getEmail(),
+                criarUsuarioDTO.getNomeSocial(), criarUsuarioDTO.getNome(), criarUsuarioDTO.getSenha(),
                 criarUsuarioDTO.getEmail(), criarUsuarioDTO.getTelefone());
     }
     public Usuario salvarUsuario(Usuario usuario){
