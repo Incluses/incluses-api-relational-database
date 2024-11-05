@@ -25,12 +25,4 @@ public class TipoPerfilService {
     public TipoPerfil buscarTipoPerfilPorId(UUID id){
         return tipoPerfilRepository.findById(id).orElseThrow(() -> new RuntimeException("TipoPerfil não encontrado"));
     }
-    public TipoPerfil excluirTipoPerfil(UUID id){
-        Optional<TipoPerfil> tipo = tipoPerfilRepository.findById(id);
-        if(tipo.isPresent()){
-            tipoPerfilRepository.deleteById(id);
-            return tipo.get();
-        }
-        return null;
-    }
 }

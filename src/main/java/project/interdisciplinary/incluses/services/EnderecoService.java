@@ -25,12 +25,4 @@ public class EnderecoService {
     public Endereco buscarEnderecoPorId(UUID id){
         return enderecoRepository.findById(id).orElseThrow(() -> new RuntimeException("Endereco não encontrado"));
     }
-    public Endereco excluirEndereco(UUID id){
-        Optional<Endereco> ende = enderecoRepository.findById(id);
-        if(ende.isPresent()){
-            enderecoRepository.deleteById(id);
-            return ende.get();
-        }
-        return null;
-    }
 }

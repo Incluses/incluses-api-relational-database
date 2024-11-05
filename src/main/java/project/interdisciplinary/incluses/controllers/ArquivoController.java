@@ -14,7 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import project.interdisciplinary.incluses.models.Arquivo;
-import project.interdisciplinary.incluses.models.Perfil;
+import project.interdisciplinary.incluses.models.Message;
 import project.interdisciplinary.incluses.services.ArquivoService;
 
 import java.util.*;
@@ -31,39 +31,39 @@ public class ArquivoController {
     }
 
     @GetMapping("/selecionar")
-    @Operation(summary = "Lista todos os arquivos",
-            description = "Retorna uma lista de todos os Arquivos disponiveis")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",
-            description = "Lista de Arquivos retornados com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Arquivo.class))),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")})
+    @Operation(summary = "Lista todos os arquivos", description = "Retorna uma lista de todos os Arquivos disponíveis")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de Arquivos retornados com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Arquivo.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     public List<Arquivo> listarArquivos() {
         return arquivoService.listarArquivos();
     }
 
     @GetMapping("/selecionar-id/{id}")
-    public Arquivo listarArquivoPorId(@PathVariable UUID id){
+    @Operation(summary = "Lista arquivo por id", description = "Retorna arquivo por id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Arquivo retornado com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Arquivo.class))),
+            @ApiResponse(responseCode = "404", description = "Arquivo não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    public Arquivo listarArquivoPorId(@PathVariable UUID id) {
         Arquivo arquivo = arquivoService.buscarArquivoPorId(id);
-        if (arquivo != null){
-            return arquivo;
-        }
-        else {
-            return null;
-        }
+        return arquivo != null ? arquivo : null;
     }
 
     @PostMapping("/inserir")
-    @Operation(summary = "Insere um arquivo",
-            description = "Insere um arquivo de acordo com o schema")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",
-            description = "Arquivo inserido com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Arquivo.class))),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor"),
+    @Operation(summary = "Insere um arquivo", description = "Insere um arquivo de acordo com o schema")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Arquivo inserido com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Arquivo.class))),
             @ApiResponse(responseCode = "400", description = "Erro de validação",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Arquivo.class)))})
-    public ResponseEntity<Object> inserirArquivo(@Valid @RequestBody Arquivo arquivo,
-                                                 BindingResult resultado) {
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    public ResponseEntity<Object> inserirArquivo(@Valid @RequestBody Arquivo arquivo, BindingResult resultado) {
         if (resultado.hasErrors()) {
             Map<String, String> errors = new HashMap<>();
             for (FieldError error : resultado.getFieldErrors()) {
@@ -72,79 +72,28 @@ public class ArquivoController {
             return ResponseEntity.badRequest().body(errors);
         } else {
             Arquivo arquivo1 = arquivoService.salvarArquivo(arquivo);
-            if (arquivo1.getId() == arquivo.getId()) {
-                return ResponseEntity.ok(arquivo1);
-            } else {
-                return ResponseEntity.badRequest().build();
-            }
-        }
-    }
-
-    @DeleteMapping("/excluir/{id}")
-    @Operation(summary = "Deleta um arquivo",
-            description = "Deleta um arquivo de acordo com o seu id")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",
-            description = "Arquivo excluido com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Arquivo.class))),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor"),
-            @ApiResponse(responseCode = "400", description = "Erro de validação",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Arquivo.class)))})
-    public ResponseEntity<Object> excluirArquivo(@PathVariable UUID id) {
-        if (arquivoService.excluirArquivo(id) != null) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "ok");
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PutMapping("/atualizar/{id}")
-    @Operation(summary = "Atualizar um arquivo",
-            description = "Atualizar um arquivo de acordo com o seu id")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",
-            description = "Arquivo atualizado com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Arquivo.class))),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")})
-    public ResponseEntity<Object> atualizarArquivo(@PathVariable UUID id, @Valid
-    @RequestBody Arquivo arquivoAtualizado, BindingResult resultado) {
-        Arquivo arquivo;
-        if (resultado.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : resultado.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        } else {
-            arquivo = arquivoService.buscarArquivoPorId(id);
-            arquivo.setNome(arquivoAtualizado.getNome());
-            arquivo.setTamanho(arquivoAtualizado.getTamanho());
-            arquivo.setS3Key(arquivoAtualizado.getS3Key());
-            arquivo.setS3Url(arquivoAtualizado.getS3Url());
-            arquivo.setFkTipoArquivoId(arquivoAtualizado.getFkTipoArquivoId());
-            arquivoService.salvarArquivo(arquivo);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "ok");
-            return ResponseEntity.ok(response);
+            return arquivo1.getId() == arquivo.getId() ? ResponseEntity.ok(arquivo1) : ResponseEntity.badRequest().build();
         }
     }
 
     @PatchMapping("/atualizarParcial/{id}")
-    @Operation(summary = "Atualizar um arquivo parcialmente",
-            description = "Atualizar um arquivo parcialmente de acordo com o seu id")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200",
-            description = "Arquivo atualizado com sucesso",
-            content = @Content(mediaType = "application/json", schema = @Schema(implementation = Arquivo.class))),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")})
-    public ResponseEntity atualizarArquivoParcial(@PathVariable UUID id, @RequestBody Map updates) {
+    @Operation(summary = "Atualiza parcialmente um arquivo", description = "Atualiza parcialmente um arquivo de acordo com o seu id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Arquivo atualizado com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))),
+            @ApiResponse(responseCode = "400", description = "Erro de validação",
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404", description = "Arquivo não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    public ResponseEntity<Object> atualizarArquivoParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         Arquivo arquivo = arquivoService.buscarArquivoPorId(id);
         Map<String, String> response = new HashMap<>();
-
 
         if (arquivo == null) {
             return ResponseEntity.notFound().build();
         }
+
         if (updates.containsKey("nome")) {
             arquivo.setNome((String) updates.get("nome"));
         }
@@ -159,22 +108,22 @@ public class ArquivoController {
         }
         if (updates.containsKey("fkTipoArquivoId")) {
             try {
-                arquivo.setFkTipoArquivoId(((UUID) updates.get("fkTipoArquivoId")));
-            } catch (ClassCastException e) {
+                arquivo.setFkTipoArquivoId(UUID.fromString((String) updates.get("fkTipoArquivoId")));
+            } catch (ClassCastException | IllegalArgumentException e) {
                 response.put("message", "Tipo de arquivo inválido.");
                 return ResponseEntity.badRequest().body(response);
             }
         }
 
-        // Validate the updated Produto object
         Set<ConstraintViolation<Arquivo>> violations = validator.validate(arquivo);
         if (!violations.isEmpty()) {
             Map<String, String> errors = new HashMap<>();
-            for (ConstraintViolation<Arquivo> violationsIn : violations) {
-                errors.put(violationsIn.getPropertyPath().toString(), violationsIn.getMessageTemplate());
+            for (ConstraintViolation<Arquivo> violation : violations) {
+                errors.put(violation.getPropertyPath().toString(), violation.getMessage());
             }
             return ResponseEntity.badRequest().body(errors);
         }
+
         arquivoService.salvarArquivo(arquivo);
         response.put("message", "ok");
         return ResponseEntity.ok(response);

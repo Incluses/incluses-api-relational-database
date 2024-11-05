@@ -1,6 +1,8 @@
 package project.interdisciplinary.incluses.repositories;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
@@ -33,7 +35,8 @@ public interface CursoRepository extends JpaRepository<Curso, UUID> {
                     @Param("perfilId") UUID perfilId);
 
 
-    @Procedure(name = "deletar_curso")
-    void deletarCurso(UUID[] c_uuids);
-
+    @Transactional
+    @Modifying
+    @Query(value = "CALL deletar_curso(:c_uuids)", nativeQuery = true)
+    void deletarCurso(@Param("c_uuids") UUID[] c_uuids);
 }

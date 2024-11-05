@@ -18,7 +18,7 @@ public interface MaterialCursoRepository extends JpaRepository<MaterialCurso, UU
                             @Param("mc_arquivo_id") UUID arquivoId,
                             @Param("mc_nome") String nome);
     @Procedure(procedureName = "deletar_material_curso")
-    void deleteMaterialCurso(UUID mcMaterialCursoId);
+    void deletarMaterialCurso(UUID mcMaterialCursoId);
 
     Optional<List<MaterialCurso>> findMaterialCursosByFkCursoId(UUID fkCurso);
 

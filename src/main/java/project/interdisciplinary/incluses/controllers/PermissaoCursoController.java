@@ -1,5 +1,7 @@
 package project.interdisciplinary.incluses.controllers;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
@@ -8,10 +10,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import project.interdisciplinary.incluses.models.Message;
 import project.interdisciplinary.incluses.models.PermissaoCurso;
 import project.interdisciplinary.incluses.services.PermissaoCursoService;
 
 import java.util.*;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/permissao-curso")
@@ -27,11 +34,24 @@ public class PermissaoCursoController {
         this.permissaoCursoService = permissaoCursoService;
     }
 
+    @Operation(summary = "Listar todas as permissões de curso")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de permissões retornada com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @GetMapping("/selecionar")
     public List<PermissaoCurso> listarPermissoes() {
         return permissaoCursoService.listarPermissoesCursos();
     }
 
+    @Operation(summary = "Inserir nova permissão de curso")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Permissão inserida com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Erro de validação na permissão"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @PostMapping("/inserir")
     public ResponseEntity<Object> inserirPermissao(@Valid @RequestBody PermissaoCurso permissaoCurso, BindingResult resultado) {
         if (resultado.hasErrors()) {
@@ -49,6 +69,14 @@ public class PermissaoCursoController {
         }
     }
 
+    @Operation(summary = "Excluir permissão de curso por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Permissão excluída com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Permissão não encontrada"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @DeleteMapping("/excluir/{id}")
     public ResponseEntity<Object> excluirPermissao(@PathVariable UUID id) {
         if (permissaoCursoService.excluirPermissaoCurso(id) != null) {
@@ -60,28 +88,15 @@ public class PermissaoCursoController {
         }
     }
 
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<Object> atualizarPermissao(@PathVariable UUID id, @Valid @RequestBody PermissaoCurso permissaoAtualizada, BindingResult resultado) {
-        if (resultado.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : resultado.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        } else {
-            PermissaoCurso permissaoExistente = permissaoCursoService.buscarPermissaoPorId(id);
-            if (permissaoExistente == null) {
-                return ResponseEntity.notFound().build();
-            }
-            permissaoExistente.setPermissao(permissaoAtualizada.getPermissao());
-            permissaoExistente.setFkCursoId(permissaoAtualizada.getFkCursoId());
-            permissaoCursoService.salvarPermissaoCurso(permissaoExistente);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Permissão atualizada com sucesso.");
-            return ResponseEntity.ok(response);
-        }
-    }
-
+    @Operation(summary = "Atualizar parcialmente permissão de curso por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Permissão atualizada parcialmente com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Permissão não encontrada"),
+            @ApiResponse(responseCode = "400", description = "Erro de validação na permissão"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @PatchMapping("/atualizarParcial/{id}")
     public ResponseEntity<Object> atualizarPermissaoParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         PermissaoCurso permissaoExistente = permissaoCursoService.buscarPermissaoPorId(id);

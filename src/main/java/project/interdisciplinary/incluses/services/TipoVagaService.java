@@ -25,12 +25,4 @@ public class TipoVagaService {
     public TipoVaga buscarTipoVagaPorId(UUID id){
         return tipoVagaRepository.findById(id).orElseThrow(() -> new RuntimeException("TipoVaga não encontrado"));
     }
-    public TipoVaga excluirTipoVaga(UUID id){
-        Optional<TipoVaga> tipo = tipoVagaRepository.findById(id);
-        if(tipo.isPresent()){
-            tipoVagaRepository.deleteById(id);
-            return tipo.get();
-        }
-        return null;
-    }
 }

@@ -28,16 +28,18 @@ public class CursoService {
     public Curso buscarCursoPorId(UUID id){
         return cursoRepository.findById(id).orElseThrow(() -> new RuntimeException("Curso não encontrado"));
     }
-    public boolean excluirCurso(UUID id){
-        UUID[] ids = new UUID[100];
-        ids[0] = id;
-        cursoRepository.deletarCurso(ids);
-        Optional<Curso> curs = cursoRepository.findById(id);
-        if(curs.isPresent()){
+    public boolean excluirCurso(UUID id) {
+        // Cria uma lista com o UUID recebido
+        UUID[] cursoIds = {id};
+        try {
+            // Chama o método no repositório passando a lista com o UUID
+            cursoRepository.deletarCurso(cursoIds);
+
+            // Verifica se o curso foi deletado
+            return cursoRepository.findById(id).isEmpty();
+        } catch (Exception e) {
+            // Lida com a exceção, caso necessário
             return false;
-        }
-        else {
-            return true;
         }
     }
     public List<Curso> findByNome(String nome){

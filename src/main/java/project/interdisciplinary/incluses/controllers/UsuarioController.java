@@ -1,11 +1,14 @@
 package project.interdisciplinary.incluses.controllers;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import project.interdisciplinary.incluses.models.Message;
 import project.interdisciplinary.incluses.models.Usuario;
 import project.interdisciplinary.incluses.models.dto.CriarUsuarioDTO;
 import project.interdisciplinary.incluses.services.UsuarioService;
@@ -16,6 +19,10 @@ import java.util.*;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/usuario")
@@ -29,25 +36,42 @@ public class UsuarioController {
         this.validator = validator;
     }
 
+    @Operation(summary = "Listar todos os usuários")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de usuários retornada com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @GetMapping("/selecionar")
     public List<Usuario> listarUsuarios() {
         return usuarioService.listarUsuarios();
     }
 
+    @Operation(summary = "Buscar usuário por ID do perfil")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuário encontrado"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @GetMapping("/selecionar-fk-perfil/{fkPerfil}")
-    public Object acharUsuarioPorFkPerfil(@PathVariable UUID fkPerfil){
+    public Object acharUsuarioPorFkPerfil(@PathVariable UUID fkPerfil) {
         Usuario usuario = usuarioService.acharPorFkPerfil(fkPerfil);
-        if(usuario != null){
+        if (usuario != null) {
             return usuario;
-        }
-        else {
+        } else {
             Map<String, String> response = new HashMap<>();
-            response.put("message","nada encontrado");
+            response.put("message", "nada encontrado");
             return ResponseEntity.ok(response);
         }
     }
 
-
+    @Operation(summary = "Inserir um novo usuário")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuário inserido com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Erro de validação no usuário"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @PostMapping("/public/inserir")
     public ResponseEntity<Object> inserirUsuario(@Valid @RequestBody CriarUsuarioDTO usuario, BindingResult resultado) {
         if (resultado.hasErrors()) {
@@ -64,6 +88,14 @@ public class UsuarioController {
         }
     }
 
+    @Operation(summary = "Excluir um usuário pelo ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuário excluído com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @DeleteMapping("/excluir/{id}")
     public ResponseEntity<Object> excluirUsuario(@PathVariable UUID id) {
         if (usuarioService.excluirUsuario(id) == true) {
@@ -75,28 +107,15 @@ public class UsuarioController {
         }
     }
 
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<Object> atualizarUsuario(@PathVariable UUID id, @Valid @RequestBody Usuario usuarioAtualizado, BindingResult resultado) {
-        Map<String, String> response = new HashMap<>();
-        if (resultado.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : resultado.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        } else {
-            Usuario usuario = usuarioService.buscarUsuarioPorId(id);
-            if (usuario == null) {
-                return ResponseEntity.notFound().build();
-            }
-            usuario.setCpf(usuarioAtualizado.getCpf());
-            usuario.setFkPerfilId(usuarioAtualizado.getFkPerfilId());
-            usuario.setDtNascimento(usuarioAtualizado.getDtNascimento());
-            usuarioService.salvarUsuario(usuario);
-            response.put("message", "ok");
-            return ResponseEntity.ok(response);        }
-    }
-
+    @Operation(summary = "Atualizar parcialmente um usuário pelo ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Usuário atualizado com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Usuario.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Erro de validação no usuário"),
+            @ApiResponse(responseCode = "404", description = "Usuário não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @PatchMapping("/atualizarParcial/{id}")
     public ResponseEntity<Object> atualizarUsuarioParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         Usuario usuario = usuarioService.buscarUsuarioPorId(id);
@@ -154,6 +173,4 @@ public class UsuarioController {
         Usuario usuario2 = usuarioService.salvarUsuario(usuario);
         return ResponseEntity.ok(usuario2);
     }
-
 }
-

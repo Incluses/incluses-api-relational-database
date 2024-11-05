@@ -29,14 +29,7 @@ public class PerfilService implements UserDetailsService {
     public Perfil buscarPerfilPorId(UUID id){
         return perfilRepository.findById(id).orElseThrow(() -> new RuntimeException("Perfil não encontrado"));
     }
-    public Perfil excluirPerfil(UUID id){
-        Optional<Perfil> perf = perfilRepository.findById(id);
-        if(perf.isPresent()){
-            perfilRepository.deleteById(id);
-            return perf.get();
-        }
-        return null;
-    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Perfil users = perfilRepository.findPerfilByEmail(username).

@@ -1,13 +1,19 @@
 package project.interdisciplinary.incluses.controllers;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import project.interdisciplinary.incluses.models.Curso;
 import project.interdisciplinary.incluses.models.Empresa;
-import project.interdisciplinary.incluses.models.Usuario;
+import project.interdisciplinary.incluses.models.Message;
 import project.interdisciplinary.incluses.models.dto.CriarEmpresaDTO;
 import project.interdisciplinary.incluses.services.EmpresaService;
 
@@ -28,23 +34,41 @@ public class EmpresaController {
         this.validator = validator;
     }
 
+    @Operation(summary = "Lista todas as empresas", description = "Retorna uma lista de todas as empresas disponíveis")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de empresas retornada com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Empresa.class))),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @GetMapping("/selecionar")
     public List<Empresa> listarEmpresas() {
         return empresaService.listarEmpresas();
     }
 
+    @Operation(summary = "Busca empresa por perfil", description = "Retorna a empresa associada ao perfil fornecido")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Empresa encontrada",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Empresa.class))),
+            @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
+    })
     @GetMapping("/selecionar-fk-perfil/{fkPerfil}")
-    public Object acharUsuarioPorFkPerfil(@PathVariable UUID fkPerfil){
+    public Object acharEmpresaPorFkPerfil(@PathVariable UUID fkPerfil) {
         Empresa empresa = empresaService.acharPorFkPerfil(fkPerfil);
-        if(empresa != null){
+        if (empresa != null) {
             return empresa;
-        }
-        else {
+        } else {
             Map<String, String> response = new HashMap<>();
-            response.put("message","nada encontrado");
+            response.put("message", "nada encontrado");
             return ResponseEntity.ok(response);
         }
     }
+
+    @Operation(summary = "Insere uma nova empresa", description = "Insere uma nova empresa com os dados fornecidos")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Empresa inserida com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))),
+            @ApiResponse(responseCode = "400", description = "Erro de validação nos dados da empresa")
+    })
     @PostMapping("/public/inserir")
     public ResponseEntity<Object> inserirEmpresa(@Valid @RequestBody CriarEmpresaDTO empresa, BindingResult resultado) {
         if (resultado.hasErrors()) {
@@ -61,9 +85,16 @@ public class EmpresaController {
         }
     }
 
+    @Operation(summary = "Exclui uma empresa", description = "Exclui a empresa com o ID fornecido")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Empresa excluída com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
+    })
     @DeleteMapping("/excluir/{id}")
     public ResponseEntity<Object> excluirEmpresa(@PathVariable UUID id) {
-        if (empresaService.excluirEmpresa(id) == true) {
+        if (empresaService.excluirEmpresa(id)) {
             Map<String, String> response = new HashMap<>();
             response.put("message", "ok");
             return ResponseEntity.ok(response);
@@ -72,31 +103,14 @@ public class EmpresaController {
         }
     }
 
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<Object> atualizarEmpresa(@PathVariable UUID id, @Valid @RequestBody Empresa empresaAtualizada, BindingResult resultado) {
-        if (resultado.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : resultado.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        } else {
-            Empresa empresa = empresaService.buscarEmpresaPorId(id);
-            if (empresa == null) {
-                return ResponseEntity.notFound().build();
-            }
-            empresa.setCnpj(empresaAtualizada.getCnpj());
-            empresa.setRazaoSocial(empresaAtualizada.getRazaoSocial());
-            empresa.setFkPerfilId(empresaAtualizada.getFkPerfilId());
-            empresa.setWebsite(empresaAtualizada.getWebsite());
-            empresa.setFkEnderecoId(empresaAtualizada.getFkEnderecoId());
-            empresaService.salvarEmpresa(empresa);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "ok");
-            return ResponseEntity.ok(response);
-        }
-    }
-
+    @Operation(summary = "Atualiza parcialmente uma empresa", description = "Atualiza parcialmente os dados de uma empresa com base no ID fornecido")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Empresa atualizada com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Empresa.class))
+            ),
+            @ApiResponse(responseCode = "400", description = "Erro de validação nos dados atualizados"),
+            @ApiResponse(responseCode = "404", description = "Empresa não encontrada")
+    })
     @PatchMapping("/atualizarParcial/{id}")
     public ResponseEntity<Object> atualizarEmpresaParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         Empresa empresa = empresaService.buscarEmpresaPorId(id);
@@ -140,7 +154,6 @@ public class EmpresaController {
             }
         }
 
-        // Validação do objeto `Empresa` atualizado
         Set<ConstraintViolation<Empresa>> violations = validator.validate(empresa);
         if (!violations.isEmpty()) {
             Map<String, String> errors = new HashMap<>();
@@ -153,5 +166,4 @@ public class EmpresaController {
         Empresa empresa1 = empresaService.salvarEmpresa(empresa);
         return ResponseEntity.ok(empresa1);
     }
-
 }
