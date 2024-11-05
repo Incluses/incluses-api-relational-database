@@ -1,6 +1,8 @@
 package project.interdisciplinary.incluses.repositories;
 
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.query.Param;
@@ -26,8 +28,10 @@ public interface VagaRepository extends JpaRepository<Vaga, UUID> {
             "AND LOWER(v.nome) LIKE LOWER(CONCAT('%', :nome, '%'))")
     Optional<List<Vaga>> findVagasByNomeContainsIgnoreCase(@Param("nome") String nome);
 
-    @Procedure(name = "deletar_vaga")
-    void deletarVaga(UUID[] v_uuids);
+    @Transactional
+    @Modifying
+    @Query(value = "CALL deletar_vaga(:c_uuids)", nativeQuery = true)
+    void deletarVaga(@Param("c_uuids") UUID[] c_uuids);
 
     @Query("SELECT v FROM Vaga v JOIN PermissaoVaga pv ON v.id = pv.fkVagaId WHERE pv.permissao = true")
     List<Vaga> findAllPermissao();

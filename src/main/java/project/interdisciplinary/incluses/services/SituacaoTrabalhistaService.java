@@ -28,12 +28,4 @@ public class SituacaoTrabalhistaService {
         return situacaoTrabalhistaRepository.findById(id).orElseThrow(() -> new RuntimeException("SituacaoTrabalhis não encontrado"));
     }
 
-    public SituacaoTrabalhista excluirSituacaoTrabalhista(UUID id) {
-        Optional<SituacaoTrabalhista> situ = situacaoTrabalhistaRepository.findById(id);
-        if (situ.isPresent()) {
-            situacaoTrabalhistaRepository.deleteById(id);
-            return situ.get();
-        }
-        return null;
-    }
 }

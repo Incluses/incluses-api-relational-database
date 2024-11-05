@@ -28,7 +28,7 @@ public class MaterialCursoService {
         return materialCursoRepository.findById(id).orElseThrow(() -> new RuntimeException("MaterialCurso não encontrado"));
     }
     public boolean excluirMaterialCurso(UUID id){
-        materialCursoRepository.deleteMaterialCurso(id);
+        materialCursoRepository.deletarMaterialCurso(id);
         Optional<MaterialCurso> mate = materialCursoRepository.findById(id);
         if(mate.isPresent()){
             return false;

@@ -70,25 +70,6 @@ public class SituacaoTrabalhistaController {
         }
     }
 
-    @Operation(summary = "Excluir uma situação trabalhista pelo ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Situação trabalhista excluída com sucesso",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
-            ),
-            @ApiResponse(responseCode = "404", description = "Situação trabalhista não encontrada"),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    })
-    @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<Object> excluirSituacaoTrabalhista(@PathVariable UUID id) {
-        if (situacaoTrabalhistaService.excluirSituacaoTrabalhista(id) != null) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message","ok");
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @Operation(summary = "Atualizar uma situação trabalhista pelo ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Situação trabalhista atualizada com sucesso",

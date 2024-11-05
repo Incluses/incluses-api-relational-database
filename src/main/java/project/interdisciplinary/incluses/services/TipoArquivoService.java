@@ -26,14 +26,6 @@ public class TipoArquivoService {
     public TipoArquivo buscarTipoArquivoPorId(UUID id){
         return tipoArquivoRepository.findById(id).orElseThrow(() -> new RuntimeException("TipoArquivo não encontrado"));
     }
-    public TipoArquivo excluirTipoArquivo(UUID id){
-        Optional<TipoArquivo> tipo = tipoArquivoRepository.findById(id);
-        if(tipo.isPresent()){
-            tipoArquivoRepository.deleteById(id);
-            return tipo.get();
-        }
-        return null;
-    }
     public TipoArquivo findByNome(String nome){
         Optional<TipoArquivo> tipo = tipoArquivoRepository.findByNomeIgnoreCase(nome);
         if (tipo.isPresent()){

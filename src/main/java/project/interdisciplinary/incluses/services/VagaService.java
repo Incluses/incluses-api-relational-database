@@ -30,8 +30,7 @@ public class VagaService {
         return vagaRepository.findById(id).orElseThrow(() -> new RuntimeException("Vaga não encontrada"));
     }
     public boolean excluirVaga(UUID id){
-        UUID[] ids = new UUID[100];
-        ids[0] = id;
+        UUID[] ids = {id};
         vagaRepository.deletarVaga(ids);
         Optional<Vaga> vaga = vagaRepository.findById(id);
         if(vaga.isPresent()){

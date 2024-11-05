@@ -89,25 +89,6 @@ public class TipoArquivoController {
         }
     }
 
-    @Operation(summary = "Excluir um tipo de arquivo pelo ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Tipo de arquivo excluído com sucesso",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
-            ),
-            @ApiResponse(responseCode = "404", description = "Tipo de arquivo não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    })
-    @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<Object> excluirTipoArquivo(@PathVariable UUID id) {
-        if (tipoArquivoService.excluirTipoArquivo(id) != null) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "ok");
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @Operation(summary = "Atualizar um tipo de arquivo pelo ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tipo de arquivo atualizado com sucesso",

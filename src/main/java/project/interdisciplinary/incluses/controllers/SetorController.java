@@ -44,8 +44,7 @@ public class SetorController {
 
     @Operation(summary = "Inserir um novo setor")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Setor inserido com sucesso",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
+            @ApiResponse(responseCode = "200", description = "Setor inserido com sucesso",                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
             ),
             @ApiResponse(responseCode = "400", description = "Erro de validação no setor"),
             @ApiResponse(responseCode = "500", description = "Erro interno do servidor")

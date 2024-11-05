@@ -69,25 +69,6 @@ public class TipoPerfilController {
         }
     }
 
-    @Operation(summary = "Excluir um tipo de perfil pelo ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Tipo de perfil excluído com sucesso",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
-            ),
-            @ApiResponse(responseCode = "404", description = "Tipo de perfil não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    })
-    @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<Object> excluirTipoPerfil(@PathVariable UUID id) {
-        if (tipoPerfilService.excluirTipoPerfil(id) != null) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "ok");
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @Operation(summary = "Atualizar um tipo de perfil pelo ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tipo de perfil atualizado com sucesso",

@@ -91,22 +91,6 @@ public class PerfilController {
         }
     }
 
-    @Operation(summary = "Excluir perfil por ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Perfil excluído com sucesso",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
-            ),
-            @ApiResponse(responseCode = "404", description = "Perfil não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    })
-    @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<String> excluirPerfil(@PathVariable UUID id) {
-        if (perfilService.excluirPerfil(id) != null) {
-            return ResponseEntity.ok("Perfil excluído com sucesso");
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 
     @Operation(summary = "Atualizar parcialmente perfil por ID")
     @ApiResponses(value = {

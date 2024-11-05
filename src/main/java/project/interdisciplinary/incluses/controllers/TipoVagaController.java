@@ -68,26 +68,6 @@ public class TipoVagaController {
             }
         }
     }
-
-    @Operation(summary = "Excluir um tipo de vaga pelo ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Tipo de vaga excluído com sucesso",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
-            ),
-            @ApiResponse(responseCode = "404", description = "Tipo de vaga não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    })
-    @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<Object> excluirTipoVaga(@PathVariable UUID id) {
-        if (tipoVagaService.excluirTipoVaga(id) != null) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "ok");
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @Operation(summary = "Atualizar um tipo de vaga pelo ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tipo de vaga atualizado com sucesso",
