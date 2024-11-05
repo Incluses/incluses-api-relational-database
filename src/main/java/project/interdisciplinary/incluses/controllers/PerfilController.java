@@ -1,11 +1,14 @@
 package project.interdisciplinary.incluses.controllers;
 
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import project.interdisciplinary.incluses.models.Message;
 import project.interdisciplinary.incluses.models.Perfil;
 import project.interdisciplinary.incluses.services.PerfilService;
 
@@ -13,6 +16,10 @@ import java.util.*;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/perfil")
@@ -26,43 +33,72 @@ public class PerfilController {
         this.validator = validator;
     }
 
+    @Operation(summary = "Listar todos os perfis")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Lista de perfis retornada com sucesso"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @GetMapping("/selecionar")
     public List<Perfil> listarPerfis() {
         return perfilService.listarPerfis();
     }
 
+    @Operation(summary = "Listar perfil por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Perfil encontrado"),
+            @ApiResponse(responseCode = "404", description = "Perfil não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @GetMapping("/selecionar-id/{id}")
-    public Perfil listarPerfilPorId(@PathVariable UUID id){
+    public Perfil listarPerfilPorId(@PathVariable UUID id) {
         Perfil perfil = perfilService.buscarPerfilPorId(id);
-        if (perfil != null){
+        if (perfil != null) {
             return perfil;
-        }
-        else {
+        } else {
             return null;
         }
     }
 
+    @Operation(summary = "Buscar perfil por e-mail")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Perfil encontrado"),
+            @ApiResponse(responseCode = "404", description = "Perfil não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @GetMapping("/selecionar-email/{email}")
-    public Perfil buscarPerfil (@PathVariable String email){
+    public Perfil buscarPerfil(@PathVariable String email) {
         Perfil perfil = perfilService.findByEmail(email);
-        if (perfil != null){
+        if (perfil != null) {
             return perfil;
-        }
-        else {
-            return null;
-        }
-    }
-    @GetMapping("/selecionar-nome/{nome}")
-    public List<Perfil> buscarPerfilNome (@PathVariable String nome){
-        List<Perfil> perfils = perfilService.findByNome(nome);
-        if (perfils != null){
-            return perfils;
-        }
-        else {
+        } else {
             return null;
         }
     }
 
+    @Operation(summary = "Buscar perfis por nome")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Perfis encontrados"),
+            @ApiResponse(responseCode = "404", description = "Perfis não encontrados"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
+    @GetMapping("/selecionar-nome/{nome}")
+    public List<Perfil> buscarPerfilNome(@PathVariable String nome) {
+        List<Perfil> perfils = perfilService.findByNome(nome);
+        if (perfils != null) {
+            return perfils;
+        } else {
+            return null;
+        }
+    }
+
+    @Operation(summary = "Excluir perfil por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Perfil excluído com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Perfil não encontrado"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @DeleteMapping("/excluir/{id}")
     public ResponseEntity<String> excluirPerfil(@PathVariable UUID id) {
         if (perfilService.excluirPerfil(id) != null) {
@@ -72,28 +108,15 @@ public class PerfilController {
         }
     }
 
-    @PutMapping("/atualizar/{id}")
-    public ResponseEntity<Object> atualizarPerfil(@PathVariable UUID id, @Valid @RequestBody Perfil perfilAtualizado, BindingResult resultado) {
-        if (resultado.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            for (FieldError error : resultado.getFieldErrors()) {
-                errors.put(error.getField(), error.getDefaultMessage());
-            }
-            return ResponseEntity.badRequest().body(errors);
-        } else {
-            Perfil perfil = perfilService.buscarPerfilPorId(id);
-            perfil.setNome(perfilAtualizado.getNome());
-            perfil.setSenha(perfilAtualizado.getSenha());
-            perfil.setEmail(perfilAtualizado.getEmail());
-            perfil.setBiografia(perfilAtualizado.getBiografia());
-            perfil.setFkTipoPerfilId(perfilAtualizado.getFkTipoPerfilId());
-            perfilService.salvarPerfil(perfil);
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "ok");
-            return ResponseEntity.ok(response);        }
-    }
-
-
+    @Operation(summary = "Atualizar parcialmente perfil por ID")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Perfil atualizado parcialmente com sucesso",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Perfil.class))
+            ),
+            @ApiResponse(responseCode = "404", description = "Perfil não encontrado"),
+            @ApiResponse(responseCode = "400", description = "Requisição inválida"),
+            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
+    })
     @PatchMapping("/atualizarParcial/{id}")
     public ResponseEntity<Object> atualizarPerfilParcial(@PathVariable UUID id, @RequestBody Map<String, Object> updates) {
         Perfil perfil = perfilService.buscarPerfilPorId(id);
@@ -145,6 +168,4 @@ public class PerfilController {
         Perfil perfil2 = perfilService.salvarPerfil(perfil); // Supondo que você tenha um método para salvar o Perfil
         return ResponseEntity.ok(perfil2);
     }
-
 }
-

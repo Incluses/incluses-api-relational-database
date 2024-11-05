@@ -2,6 +2,8 @@ package project.interdisciplinary.incluses.controllers;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -35,6 +37,11 @@ public class AuthController {
         this.secretKey = secretKey;
     }
 
+
+    @Operation(summary = "Login", description = "Realiza o login do usuário e gera um token JWT.")
+    @ApiResponse(responseCode = "200", description = "Token gerado com sucesso.")
+    @ApiResponse(responseCode = "401", description = "Usuário ou senha inválidos.")
+    @ApiResponse(responseCode = "404", description = "Usuário inexistente.")
     @PostMapping("/api/auth/login")
     public Map<String, Object> login(@RequestBody LoginRequest loginRequest) {
         Optional<Perfil> users = userRepository.findPerfilByEmail(loginRequest.getEmail());
