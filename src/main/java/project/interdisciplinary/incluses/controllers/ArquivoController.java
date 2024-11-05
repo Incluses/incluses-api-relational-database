@@ -76,24 +76,6 @@ public class ArquivoController {
         }
     }
 
-    @DeleteMapping("/excluir/{id}")
-    @Operation(summary = "Deleta um arquivo", description = "Deleta um arquivo de acordo com o seu id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Arquivo excluído com sucesso",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))),
-            @ApiResponse(responseCode = "404", description = "Arquivo não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    })
-    public ResponseEntity<Object> excluirArquivo(@PathVariable UUID id) {
-        if (arquivoService.excluirArquivo(id) != null) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "ok");
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @PatchMapping("/atualizarParcial/{id}")
     @Operation(summary = "Atualiza parcialmente um arquivo", description = "Atualiza parcialmente um arquivo de acordo com o seu id")
     @ApiResponses(value = {

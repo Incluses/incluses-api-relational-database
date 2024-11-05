@@ -28,12 +28,5 @@ public class ArquivoService {
     public Arquivo buscarArquivoPorId(UUID id){
         return arquivoRepository.findById(id).orElseThrow(() -> new RuntimeException("Arquivo não encontrado"));
     }
-    public Arquivo excluirArquivo(UUID id){
-        Optional<Arquivo> arqv = arquivoRepository.findById(id);
-        if(arqv.isPresent()){
-            arquivoRepository.deleteById(id);
-            return arqv.get();
-        }
-        return null;
-    }
+
 }

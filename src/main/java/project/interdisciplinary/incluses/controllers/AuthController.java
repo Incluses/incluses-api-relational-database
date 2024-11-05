@@ -53,7 +53,7 @@ public class AuthController {
                     String token = Jwts.builder()
                             .setSubject(loginRequest.getEmail())
                             .claim("role", user.getTipoPerfil().getNome())
-                            .setExpiration(new Date(System.currentTimeMillis() + 86_400_000))
+                            .setExpiration(new Date(System.currentTimeMillis() + 365 * 24 * 60 * 60 * 1000))
                             .signWith(secretKey, SignatureAlgorithm.HS512)
                             .compact();
                     logger.info("Generated Token: {}", token);

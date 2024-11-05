@@ -71,25 +71,6 @@ public class EnderecoController {
         }
     }
 
-    @Operation(summary = "Excluir um endereço")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Endereço excluído com sucesso",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
-            ),
-            @ApiResponse(responseCode = "404", description = "Endereço não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    })
-    @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<Object> excluirEndereco(@PathVariable UUID id) {
-        if (enderecoService.excluirEndereco(id) != null) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "ok");
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
     @Operation(summary = "Atualizar parcialmente um endereço")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Endereço atualizado com sucesso",
