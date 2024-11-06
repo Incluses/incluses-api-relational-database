@@ -27,16 +27,6 @@ public class MaterialCursoService {
     public MaterialCurso buscarMaterialCursoPorId(UUID id){
         return materialCursoRepository.findById(id).orElseThrow(() -> new RuntimeException("MaterialCurso não encontrado"));
     }
-    public boolean excluirMaterialCurso(UUID id){
-        materialCursoRepository.deletarMaterialCurso(id);
-        Optional<MaterialCurso> mate = materialCursoRepository.findById(id);
-        if(mate.isPresent()){
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
 
     public void criarMaterialCurso(CriarMaterialCursoDTO criarMaterialCursoDTO){
         materialCursoRepository.criarMaterialCurso(criarMaterialCursoDTO.getDescricao(),
