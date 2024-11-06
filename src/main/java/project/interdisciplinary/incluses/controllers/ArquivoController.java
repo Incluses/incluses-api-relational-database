@@ -97,12 +97,6 @@ public class ArquivoController {
         if (updates.containsKey("nome")) {
             arquivo.setNome((String) updates.get("nome"));
         }
-        if (updates.containsKey("s3Url")) {
-            arquivo.setS3Url((String) updates.get("s3Url"));
-        }
-        if (updates.containsKey("s3Key")) {
-            arquivo.setS3Key((String) updates.get("s3Key"));
-        }
         if (updates.containsKey("tamanho")) {
             arquivo.setTamanho((String) updates.get("tamanho"));
         }

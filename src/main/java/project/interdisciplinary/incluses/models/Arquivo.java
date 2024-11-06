@@ -20,17 +20,6 @@ public class Arquivo {
     @Schema(description = "Nome do Arquivo", example = "arquivo.txt")
     private String nome;
 
-    @Size(max = 1500, message = "a s3Url não pode ter mais de 300 caracteres")
-    @Column(name = "s3_url")
-    @Schema(description = "Url do Arquivo no Bucket S3", example = "https://s3.amazonaws.com/meu-bucket/imagens/imagem.jpg")
-    private String s3Url;
-
-    @Size(max = 1024, message = "a s3Key não pode ter mais de 50 caracteres")
-    @Column(name = "s3_key")
-    @Schema(description = "Key do Arquivo no Bucket S3", example = "arquivo.txt")
-    private String s3Key;
-
-
     @Size(max = 50)
     @Schema(description = "Tamanho do arquivo", example = "100")
     @NotNull(message = "O tamanho não pode ser nulo")
@@ -55,21 +44,6 @@ public class Arquivo {
         this.nome = nome;
     }
 
-    public String getS3Url() {
-        return s3Url;
-    }
-
-    public void setS3Url(String s3Url) {
-        this.s3Url = s3Url;
-    }
-
-    public String getS3Key() {
-        return s3Key;
-    }
-
-    public void setS3Key(String s3Key) {
-        this.s3Key = s3Key;
-    }
 
     public String getTamanho() {
         return tamanho;
