@@ -95,24 +95,7 @@ public class MaterialCursoController {
         }
     }
 
-    @Operation(summary = "Excluir um material de curso")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Material excluído com sucesso",
-                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = Message.class))
-            ),
-            @ApiResponse(responseCode = "404", description = "Material não encontrado"),
-            @ApiResponse(responseCode = "500", description = "Erro interno do servidor")
-    })
-    @DeleteMapping("/excluir/{id}")
-    public ResponseEntity<Object> excluirMaterialCurso(@PathVariable UUID id) {
-        if (materialCursoService.excluirMaterialCurso(id)) {
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "ok");
-            return ResponseEntity.ok(response);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+
 
     @Operation(summary = "Atualizar parcialmente um material de curso")
     @ApiResponses(value = {
